@@ -11,7 +11,17 @@ namespace proyectoPracticaProfecional
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Esto tiene que estar en todos los load de cada pagina para verificar que la session es valida
+            // Verificar primero si la sesión existe y no es nula
+            if (Session["Usuario"] == null || string.IsNullOrEmpty(Session["Usuario"].ToString()))
+            {
+                Response.Redirect("default.aspx");
+                return; // Importante para detener la ejecución
+            }
 
+            string idSession = Session["Usuario"].ToString();
+            string val = Request.QueryString["val"] ?? string.Empty;
+            string t = Request.QueryString["tipo"] ?? string.Empty;
         }
     }
 }

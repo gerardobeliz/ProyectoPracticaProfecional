@@ -262,7 +262,9 @@
             <h1 class="animated">Bienvenido</h1>
             <p class="animated delay-1"> <span class="malvinas-text">Instituto de Formación Docente y Técnica</span> N° 46</p>
             
-            <asp:Button ID="btnIngresar" runat="server" Text="Ingresar" CssClass="btn animated delay-2" OnClientClick="openAuthModal(); return false;" />
+            <asp:Button ID="btnIngresar" runat="server" Text="Ingresar" 
+                CssClass="btn animated delay-2" OnClientClick="openAuthModal(); return false;" 
+                onclick="btnIngresar_Click" />
             
             <footer class="animated delay-3">
                 "Esta página está diseñada por alumnos del 46"
@@ -288,7 +290,7 @@
                             <asp:TextBox ID="txtUsuario" runat="server" TextMode="SingleLine" placeholder="Nombre de usuario" required="required" CssClass="form-control"></asp:TextBox>
                             <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" placeholder="Contraseña" required="required" CssClass="form-control"></asp:TextBox>
                             <asp:Button ID="btnLogin" runat="server" Text="Continuar" CssClass="btn btn-primary" OnClick="btnLogin_Click" />
-                            <asp:HyperLink ID="lnkRecover" runat="server" NavigateUrl="~/RecoverPassword.aspx" CssClass="recover-link">¿Olvidaste tu contraseña?</asp:HyperLink>
+                            <%--<asp:HyperLink ID="lnkRecover" runat="server" NavigateUrl="~/RecoverPassword.aspx" CssClass="recover-link">¿Olvidaste tu contraseña?</asp:HyperLink>--%>
                         </div>
                     </div>
                 </div>

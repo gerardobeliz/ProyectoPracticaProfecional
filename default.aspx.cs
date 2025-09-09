@@ -13,10 +13,13 @@ namespace Instituto46
     {
         string usuario;
         string password;
+        string tipoUsuario;
+
         private static string Cadena = ConfigurationManager.ConnectionStrings["Cadenaint46"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
             {
                 // Inicialización de la página
@@ -30,12 +33,32 @@ namespace Instituto46
             password = txtPassword.Text;
 
             // Aquí iría la lógica de autenticación
-            if (AutenticarUsuario(usuario, password)==true)
+            if (AutenticarUsuario(usuario, password) == true)
+            // Autenticación exitosa
             {
-                // Autenticación exitosa
-                Session["UsuarioAutenticado"] = true;
-                Session["NombreUsuario"] = usuario; // Cambiado de EmailUsuario a NombreUsuario
-                Response.Redirect("home.aspx");
+
+                if (tipoUsuario == "directivo")
+                {
+
+                    Session["Usuario"] = txtUsuario.Text;
+                    Session["tipo"] = tipoUsuario;
+                    Response.Redirect("home.aspx");
+
+                }
+                if (tipoUsuario == "profesor")
+                {
+                    Session["Usuario"] = txtUsuario.Text;
+                    Session["tipo"] = tipoUsuario;
+                    Response.Redirect("home.aspx");
+
+                }
+                if (tipoUsuario == "preceptor")
+                {
+                    Session["Usuario"] = txtUsuario.Text;
+                    Session["tipo"] = tipoUsuario;
+                    Response.Redirect("home.aspx");
+                }
+
             }
             else
             {
@@ -51,7 +74,7 @@ namespace Instituto46
 
             using (SqlConnection conexion = new SqlConnection(Cadena))
             {
-                string script = String.Format("SELECT ID_USUARIO, NOMBRE, PASS FROM USUARIO WHERE NOMBRE = '{0}' AND PASS = '{1}'", txtUsuario.Text, txtPassword.Text);
+                string script = String.Format("SELECT ID_PERSONAL, NOMBRE, PASS, TIPO FROM PERSONAL WHERE NOMBRE = '{0}' AND PASS = '{1}'", txtUsuario.Text, txtPassword.Text);
 
                 conexion.Open();
 
@@ -60,12 +83,14 @@ namespace Instituto46
                 SqlDataReader reader = command.ExecuteReader();
 
                 string id = String.Empty;
-               
+
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
                         id = reader.GetInt32(0).ToString();
+                        tipoUsuario = reader.GetString(3);
+
                     }
                 }
 
@@ -75,12 +100,17 @@ namespace Instituto46
                 if (id != String.Empty)
                 {
 
-                    return (true); // Cambiado el usuario de ejemplo 
+                    return (true); // Cambio el usuario 
                 }
                 else
-                    return (false); // Cambiado el usuario de ejemplo
-            // Ejemplo básico de autenticación (deberás adaptarlo a tu BD real)
+                    return (false); // Cambiado el usuario
+
             }
+        }
+
+        protected void btnIngresar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

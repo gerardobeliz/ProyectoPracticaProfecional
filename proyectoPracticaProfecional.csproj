@@ -51,7 +51,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="altaUsuario.aspx" />
+    <Content Include="AltaAlumnos.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
     <Content Include="bin\proyectoPracticaProfecional.pdb" />
     <Content Include="css\bootstrap.min.css" />
@@ -69,6 +69,7 @@
     <Content Include="js\jquery.min.js" />
     <Content Include="js\main.js" />
     <Content Include="js\popper.js" />
+    <Content Include="ModificarAlumno.aspx" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.dll" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.pdb" />
@@ -84,12 +85,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="altaUsuario.aspx.cs">
-      <DependentUpon>altaUsuario.aspx</DependentUpon>
+    <Compile Include="AltaAlumnos.aspx.cs">
+      <DependentUpon>AltaAlumnos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="altaUsuario.aspx.designer.cs">
-      <DependentUpon>altaUsuario.aspx</DependentUpon>
+    <Compile Include="AltaAlumnos.aspx.designer.cs">
+      <DependentUpon>AltaAlumnos.aspx</DependentUpon>
     </Compile>
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
@@ -104,6 +105,13 @@
     </Compile>
     <Compile Include="home.aspx.designer.cs">
       <DependentUpon>home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarAlumno.aspx.cs">
+      <DependentUpon>ModificarAlumno.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarAlumno.aspx.designer.cs">
+      <DependentUpon>ModificarAlumno.aspx</DependentUpon>
     </Compile>
     <Compile Include="Principal.Master.cs">
       <DependentUpon>Principal.Master</DependentUpon>
