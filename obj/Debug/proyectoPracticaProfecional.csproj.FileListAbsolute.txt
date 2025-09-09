@@ -3,3 +3,8 @@ C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaP
 C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.dll
 C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.pdb
 C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
+C:\Users\gerar\OneDrive\Documentos\GitHub\ProyectoPracticaProfecional\bin\proyectoPracticaProfecional.dll
+C:\Users\gerar\OneDrive\Documentos\GitHub\ProyectoPracticaProfecional\bin\proyectoPracticaProfecional.pdb
+C:\Users\gerar\OneDrive\Documentos\GitHub\ProyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
+C:\Users\gerar\OneDrive\Documentos\GitHub\ProyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.dll
+C:\Users\gerar\OneDrive\Documentos\GitHub\ProyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.pdb

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Web Developer Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "proyectoPracticaProfecional", "proyectoPracticaProfecional\proyectoPracticaProfecional.csproj", "{EF3BF791-3B49-4D81-89EC-19933B1ADB01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "proyectoPracticaProfecional", "proyectoPracticaProfecional.csproj", "{EF3BF791-3B49-4D81-89EC-19933B1ADB01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
