@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EF3BF791-3B49-4D81-89EC-19933B1ADB01}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>proyectoPracticaProfecional</RootNamespace>
+    <AssemblyName>proyectoPracticaProfecional</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AltaAlumnos.aspx" />
+    <Content Include="bin\proyectoPracticaProfecional.dll" />
+    <Content Include="bin\proyectoPracticaProfecional.pdb" />
+    <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\bootstrap\mixins\_border-radius.css" />
+    <Content Include="css\bootstrap\mixins\_screen-reader.css" />
+    <Content Include="css\bootstrap\mixins\_visibility.css" />
+    <Content Include="css\bootstrap\utilities\_stretched-link.css" />
+    <Content Include="css\bootstrap\_media.css" />
+    <Content Include="css\style.css" />
+    <Content Include="default.aspx" />
+    <Content Include="home.aspx" />
+    <Content Include="images\Malvinas.jpg" />
+    <Content Include="image\Malvinas.jpg" />
+    <Content Include="js\bootstrap.min.js" />
+    <Content Include="js\jquery.min.js" />
+    <Content Include="js\main.js" />
+    <Content Include="js\popper.js" />
+    <Content Include="ModificarAlumno.aspx" />
+    <Content Include="obj\Debug\proyectoPracticaProfecional.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\proyectoPracticaProfecional.dll" />
+    <Content Include="obj\Debug\proyectoPracticaProfecional.pdb" />
+    <Content Include="profesores.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AltaAlumnos.aspx.cs">
+      <DependentUpon>AltaAlumnos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaAlumnos.aspx.designer.cs">
+      <DependentUpon>AltaAlumnos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="home.aspx.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="home.aspx.designer.cs">
+      <DependentUpon>home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarAlumno.aspx.cs">
+      <DependentUpon>ModificarAlumno.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarAlumno.aspx.designer.cs">
+      <DependentUpon>ModificarAlumno.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Principal.Master.cs">
+      <DependentUpon>Principal.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Principal.Master.designer.cs">
+      <DependentUpon>Principal.Master</DependentUpon>
+    </Compile>
+    <Compile Include="profesores.aspx.cs">
+      <DependentUpon>profesores.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="profesores.aspx.designer.cs">
+      <DependentUpon>profesores.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidarLongitudUsuario.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".DS_Store" />
+    <Content Include="Principal.Master" />
+    <None Include="css\.DS_Store" />
+    <None Include="css\bootstrap\.DS_Store" />
+    <None Include="css\bootstrap\mixins\.DS_Store" />
+    <None Include="fonts\.DS_Store" />
+    <None Include="images\.DS_Store" />
+    <None Include="image\.DS_Store" />
+    <None Include="js\.DS_Store" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache" />
+    <None Include="scss\.DS_Store" />
+    <None Include="scss\bootstrap\.DS_Store" />
+    <None Include="scss\bootstrap\bootstrap-grid.scss" />
+    <None Include="scss\bootstrap\bootstrap-reboot.scss" />
+    <None Include="scss\bootstrap\bootstrap.scss" />
+    <None Include="scss\bootstrap\mixins\_alert.scss" />
+    <None Include="scss\bootstrap\mixins\_background-variant.scss" />
+    <None Include="scss\bootstrap\mixins\_badge.scss" />
+    <None Include="scss\bootstrap\mixins\_border-radius.scss" />
+    <None Include="scss\bootstrap\mixins\_box-shadow.scss" />
+    <None Include="scss\bootstrap\mixins\_breakpoints.scss" />
+    <None Include="scss\bootstrap\mixins\_buttons.scss" />
+    <None Include="scss\bootstrap\mixins\_caret.scss" />
+    <None Include="scss\bootstrap\mixins\_clearfix.scss" />
+    <None Include="scss\bootstrap\mixins\_deprecate.scss" />
+    <None Include="scss\bootstrap\mixins\_float.scss" />
+    <None Include="scss\bootstrap\mixins\_forms.scss" />
+    <None Include="scss\bootstrap\mixins\_gradients.scss" />
+    <None Include="scss\bootstrap\mixins\_grid-framework.scss" />
+    <None Include="scss\bootstrap\mixins\_grid.scss" />
+    <None Include="scss\bootstrap\mixins\_hover.scss" />
+    <None Include="scss\bootstrap\mixins\_image.scss" />
+    <None Include="scss\bootstrap\mixins\_list-group.scss" />
+    <None Include="scss\bootstrap\mixins\_lists.scss" />
+    <None Include="scss\bootstrap\mixins\_nav-divider.scss" />
+    <None Include="scss\bootstrap\mixins\_pagination.scss" />
+    <None Include="scss\bootstrap\mixins\_reset-text.scss" />
+    <None Include="scss\bootstrap\mixins\_resize.scss" />
+    <None Include="scss\bootstrap\mixins\_screen-reader.scss" />
+    <None Include="scss\bootstrap\mixins\_size.scss" />
+    <None Include="scss\bootstrap\mixins\_table-row.scss" />
+    <None Include="scss\bootstrap\mixins\_text-emphasis.scss" />
+    <None Include="scss\bootstrap\mixins\_text-hide.scss" />
+    <None Include="scss\bootstrap\mixins\_text-truncate.scss" />
+    <None Include="scss\bootstrap\mixins\_transition.scss" />
+    <None Include="scss\bootstrap\mixins\_visibility.scss" />
+    <None Include="scss\bootstrap\style.scss" />
+    <None Include="scss\bootstrap\vendor\_rfs.scss" />
+    <None Include="scss\bootstrap\_alert.scss" />
+    <None Include="scss\bootstrap\_badge.scss" />
+    <None Include="scss\bootstrap\_breadcrumb.scss" />
+    <None Include="scss\bootstrap\_button-group.scss" />
+    <None Include="scss\bootstrap\_buttons.scss" />
+    <None Include="scss\bootstrap\_card.scss" />
+    <None Include="scss\bootstrap\_carousel.scss" />
+    <None Include="scss\bootstrap\_close.scss" />
+    <None Include="scss\bootstrap\_code.scss" />
+    <None Include="scss\bootstrap\_custom-forms.scss" />
+    <None Include="scss\bootstrap\_dropdown.scss" />
+    <None Include="scss\bootstrap\_forms.scss" />
+    <None Include="scss\bootstrap\_functions.scss" />
+    <None Include="scss\bootstrap\_grid.scss" />
+    <None Include="scss\bootstrap\_images.scss" />
+    <None Include="scss\bootstrap\_input-group.scss" />
+    <None Include="scss\bootstrap\_jumbotron.scss" />
+    <None Include="scss\bootstrap\_list-group.scss" />
+    <None Include="scss\bootstrap\_media.scss" />
+    <None Include="scss\bootstrap\_mixins.scss" />
+    <None Include="scss\bootstrap\_modal.scss" />
+    <None Include="scss\bootstrap\_nav.scss" />
+    <None Include="scss\bootstrap\_navbar.scss" />
+    <None Include="scss\bootstrap\_pagination.scss" />
+    <None Include="scss\bootstrap\_popover.scss" />
+    <None Include="scss\bootstrap\_print.scss" />
+    <None Include="scss\bootstrap\_progress.scss" />
+    <None Include="scss\bootstrap\_reboot.scss" />
+    <None Include="scss\bootstrap\_root.scss" />
+    <None Include="scss\bootstrap\_spinners.scss" />
+    <None Include="scss\bootstrap\_tables.scss" />
+    <None Include="scss\bootstrap\_toasts.scss" />
+    <None Include="scss\bootstrap\_tooltip.scss" />
+    <None Include="scss\bootstrap\_transitions.scss" />
+    <None Include="scss\bootstrap\_type.scss" />
+    <None Include="scss\bootstrap\_utilities.scss" />
+    <None Include="scss\bootstrap\_variables.scss" />
+    <None Include="scss\style.scss" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="scss\bootstrap\utilities\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>61655</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

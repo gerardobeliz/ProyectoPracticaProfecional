@@ -13,11 +13,12 @@ namespace proyectoPracticaProfecional
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (Session["Usuario"] != " " && Session["tipo"] != "preceptor")
-            //{
-            //    Response.Redirect("default.aspx");
-            //    return; // Importante para detener la ejecución
-            //}//cierra el if de session
+
+            if (Session["tipo"] != null && Convert.ToString(Session["tipo"]) != "preceptor")
+            {
+                Response.Redirect("default.aspx");
+                return; // Importante para detener la ejecución
+            }//cierra el if de session
 
             if (!IsPostBack)
             {
@@ -128,7 +129,7 @@ namespace proyectoPracticaProfecional
             txtDocumento.Text = "";
             ddlCurso.SelectedIndex = 0;
             txtFechaInscripcion.Text = DateTime.Today.ToString("yyyy-MM-dd");
-            chkActivo.Checked = true;
+            //chkActivo.Checked = true;
         }
     }
 }

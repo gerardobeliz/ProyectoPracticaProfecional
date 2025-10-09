@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Instituto46.Default" %>
 <!DOCTYPE html>
 <html lang="es">
-<head id="Head1" runat="server">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instituto 46</title>
     <style>
         /* CSS Minimalista para la página principal */
@@ -303,6 +303,11 @@
         function openAuthModal() {
             document.getElementById("authOverlay").style.display = "flex";
             document.body.style.overflow = "hidden";
+
+            // Enfocar el campo de usuario al abrir el modal
+            setTimeout(function () {
+                document.getElementById("txtUsuario").focus();
+            }, 100);
         }
 
         function closeAuthModal() {
@@ -313,6 +318,41 @@
         // Cerrar modal al hacer clic fuera del contenedor
         document.getElementById("authOverlay").addEventListener("click", function (e) {
             if (e.target === this) closeAuthModal();
+        });
+
+        // Función para manejar la tecla Enter en el campo de contraseña
+        function handleEnterKey(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("btnLogin").click();
+            }
+        }
+
+        // Agregar el event listener al campo de contraseña cuando el modal esté visible
+        document.getElementById("authOverlay").addEventListener('shown', function () {
+            var passwordField = document.getElementById("txtPassword");
+            if (passwordField) {
+                passwordField.addEventListener("keydown", handleEnterKey);
+            }
+        });
+
+        // Inicializar: agregar event listener al campo de contraseña
+        document.addEventListener("DOMContentLoaded", function () {
+            var passwordField = document.getElementById("txtPassword");
+            if (passwordField) {
+                passwordField.addEventListener("keydown", handleEnterKey);
+            }
+
+            // También agregar para el campo de usuario por si acaso
+            var userField = document.getElementById("txtUsuario");
+            if (userField) {
+                userField.addEventListener("keydown", function (event) {
+                    if (event.keyCode === 13) {
+                        event.preventDefault();
+                        document.getElementById("txtPassword").focus();
+                    }
+                });
+            }
         });
     </script>
 </body>

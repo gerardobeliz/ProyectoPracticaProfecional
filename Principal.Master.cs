@@ -38,7 +38,7 @@ namespace proyectoPracticaProfecional
         }
 
         // Método que crea el menú dinámico
-        private void CargarMenuDinamico()
+        public void CargarMenuDinamico()
         {
             // 1. Crear la lista de items del menú
             // 2. Recorrer cada item y crear el HTML
@@ -47,20 +47,21 @@ namespace proyectoPracticaProfecional
             if (tipo == "profesor")
             {
                 var menuprofesor = new List<MenuItem> {  
+               
                 new MenuItem { 
-                    Nombre = "Alumnos", 
-                    Url = "AltaAlumnos.aspx", 
-                    Icono = "fa-user" 
-                },
-                new MenuItem { 
-                    Nombre = "cursos", 
-                    Url = "altausuarios.aspx", 
+                    Nombre = "calificar", 
+                    Url = "calificar.aspx", 
                     Icono = "fa-briefcase" 
                 },
                 new MenuItem { 
-                    Nombre = "preceptores", 
-                    Url = "profesores.aspx", 
+                    Nombre = "Asistencia", 
+                    Url = "AsistenciaProfe.aspx", 
                     Icono = "fa-sticky-note" 
+                },
+                new MenuItem { 
+                    Nombre = "Calendario", 
+                    Url = "Calendario.aspx", 
+                    Icono = "fa-calendar" 
                 },
               };
                 CrearMenu(menuprofesor);
@@ -77,13 +78,19 @@ namespace proyectoPracticaProfecional
                                   new MenuItem { 
                         Nombre = "Modificar/eliminar Alumno", 
                         Url = "ModificarAlumno.aspx", 
-                        Icono = "fa-user" 
+                        Icono = "fa-trash" 
                     },
-                                  new MenuItem { 
-                        Nombre = "alta ususario", 
-                        Url = "altausuarios.aspx", 
-                        Icono = "fa-user" 
+                     new MenuItem { 
+                        Nombre = "asistencia", 
+                        Url = "Asistencia.aspx", 
+                        Icono = "fa-file" 
                     },
+                     new MenuItem { 
+                        Nombre = "Calendario", 
+                        Url = "Calendario.aspx", 
+                        Icono = "fa-calendar" 
+                    },
+                      
               };
                 CrearMenu(menuprece);
             }//cierre if preceptor

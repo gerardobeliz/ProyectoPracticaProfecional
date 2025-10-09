@@ -52,8 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AltaAlumnos.aspx" />
+    <Content Include="Asistencia.aspx" />
+    <Content Include="AsistenciaProfe.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
     <Content Include="bin\proyectoPracticaProfecional.pdb" />
+    <Content Include="Calendario.aspx" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\bootstrap\mixins\_border-radius.css" />
     <Content Include="css\bootstrap\mixins\_screen-reader.css" />
@@ -62,6 +65,8 @@
     <Content Include="css\bootstrap\_media.css" />
     <Content Include="css\style.css" />
     <Content Include="default.aspx" />
+    <Content Include="Directivo.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="home.aspx" />
     <Content Include="images\Malvinas.jpg" />
     <Content Include="image\Malvinas.jpg" />
@@ -92,12 +97,43 @@
     <Compile Include="AltaAlumnos.aspx.designer.cs">
       <DependentUpon>AltaAlumnos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Asistencia.aspx.cs">
+      <DependentUpon>Asistencia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Asistencia.aspx.designer.cs">
+      <DependentUpon>Asistencia.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AsistenciaProfe.aspx.cs">
+      <DependentUpon>AsistenciaProfe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AsistenciaProfe.aspx.designer.cs">
+      <DependentUpon>AsistenciaProfe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Calendario.aspx.cs">
+      <DependentUpon>Calendario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Calendario.aspx.designer.cs">
+      <DependentUpon>Calendario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Directivo.aspx.cs">
+      <DependentUpon>Directivo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Directivo.aspx.designer.cs">
+      <DependentUpon>Directivo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="home.aspx.cs">
       <DependentUpon>home.aspx</DependentUpon>
