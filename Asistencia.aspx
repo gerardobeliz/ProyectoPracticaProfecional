@@ -86,12 +86,13 @@
 
         .header-alumno {
             text-align: left !important;
-            min-width: 200px;
+            min-width: 250px;
         }
 
         .header-dia {
-            font-size: 0.8rem;
-            min-width: 80px;
+            font-size: 0.9rem;
+            min-width: 150px;
+            background: #e3f2fd;
         }
 
         .grid-row td {
@@ -116,24 +117,25 @@
         }
 
         .dropdown-asistencia {
-            width: 70px;
-            padding: 0.3rem;
+            width: 100px;
+            padding: 0.5rem;
             border: 1px solid #e0e0e0;
-            border-radius: 4px;
+            border-radius: 6px;
             text-align: center;
             font-weight: 600;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
-        .dropdown-asistencia option {
-            font-weight: 600;
-            text-align: center;
+        .dropdown-asistencia:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
         }
 
         /* Estilos para los diferentes estados */
-        .estado-P { background-color: #d4edda; color: #155724; }
-        .estado-A { background-color: #f8d7da; color: #721c24; }
-        .estado-J { background-color: #fff3cd; color: #856404; }
+        .estado-P { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .estado-A { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        .estado-J { background-color: #fff3cd; color: #856404; border-color: #ffeaa7; }
         .estado-default { background-color: #f8f9fa; color: #6c757d; }
 
         .action-buttons {
@@ -210,6 +212,32 @@
             font-style: italic;
         }
 
+        .mensaje-exito {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .mensaje-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .fecha-seleccionada {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #3498db;
+            font-size: 1.1rem;
+        }
+
         @media (max-width: 768px) {
             .filtros-container {
                 flex-direction: column;
@@ -221,21 +249,33 @@
             }
             
             .header-dia {
-                min-width: 60px;
+                min-width: 120px;
+            }
+            
+            .dropdown-asistencia {
+                width: 80px;
             }
         }
     </style>
 
     <div class="asistencia-container">
-        <h3 class="page-title">📊 Control de Asistencia Mensual</h3>
+        <h3 class="page-title">📊 Control de Asistencia Diaria</h3>
+        
+        <!-- Mensajes de estado -->
+        <asp:Panel ID="pnlMensaje" runat="server" Visible="false" CssClass="mensaje-exito">
+            <asp:Label ID="lblMensaje" runat="server" Text=""></asp:Label>
+        </asp:Panel>
         
         <!-- Filtros -->
         <div class="filtros-container">
             <div class="filter-group">
                 <label>Curso:</label>
-                <asp:DropDownList ID="ddlCurso" runat="server" CssClass="form-control">
+                <asp:DropDownList ID="ddlCurso" runat="server" CssClass="form-control" AutoPostBack="false">
                     <asp:ListItem Value="" Text="Seleccionar curso" />
-                 
+                    <asp:ListItem Value="programacion" Text="Programación" />
+                    <asp:ListItem Value="Biologia" Text="Biología" />
+                    <asp:ListItem Value="Historia" Text="Historia" />
+                    <asp:ListItem Value="Psicopedagogia" Text="Psicopedagogía" />
                 </asp:DropDownList>
             </div>
             
@@ -248,14 +288,41 @@
                 CssClass="btn-cargar" OnClick="btnCargar_Click" />
         </div>
 
+        <!-- Fecha seleccionada -->
+        <asp:Panel ID="pnlFechaSeleccionada" runat="server" CssClass="fecha-seleccionada" Visible="false">
+            📅 Asistencia para: <asp:Label ID="lblFechaSeleccionada" runat="server" Text=""></asp:Label>
+        </asp:Panel>
+
         <!-- Grid de asistencia -->
         <div class="grid-container">
             <asp:Panel ID="pnlEmpty" runat="server" CssClass="empty-state" Visible="true">
                 👆 Selecciona un curso y fecha para cargar la asistencia
             </asp:Panel>
             
-            <asp:Table ID="tblAsistencia" runat="server" CssClass="grid-table" Visible="false">
-            </asp:Table>
+            <asp:GridView ID="gvAsistencia" runat="server" CssClass="grid-table" AutoGenerateColumns="false" 
+                Visible="false" ShowHeader="true" GridLines="None">
+                <Columns>
+                    <asp:TemplateField HeaderText="Alumno" HeaderStyle-CssClass="header-alumno">
+                        <ItemTemplate>
+                            <div class="student-name">
+                                <%# Eval("NombreCompleto") %>
+                            </div>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Asistencia" HeaderStyle-CssClass="header-dia">
+                        <ItemTemplate>
+                            <asp:DropDownList ID="ddlEstadoAsistencia" runat="server" CssClass="dropdown-asistencia"
+                                onchange="aplicarEstiloDropdown(this)">
+                                <asp:ListItem Value="" Text="Seleccionar" CssClass="estado-default" />
+                                <asp:ListItem Value="P" Text="Presente" CssClass="estado-P" />
+                                <asp:ListItem Value="A" Text="Ausente" CssClass="estado-A" />
+                                <asp:ListItem Value="J" Text="Justificado" CssClass="estado-J" />
+                            </asp:DropDownList>
+                            <asp:HiddenField ID="hfAlumnoId" runat="server" Value='<%# Eval("Id") %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
         </div>
 
         <!-- Botones de acción -->
@@ -308,93 +375,73 @@
             actualizarResumen();
         }
 
-        function prevenirAutoFormat() {
-            var dropdowns = document.querySelectorAll('.dropdown-asistencia');
-            dropdowns.forEach(function (dropdown) {
-                // Prevenir que Web Forms modifique el texto
-                for (var i = 0; i < dropdown.options.length; i++) {
-                    var option = dropdown.options[i];
-                    if (option.value === 'P' && option.text !== 'P') {
-                        option.text = 'P';
-                    } else if (option.value === 'A' && option.text !== 'A') {
-                        option.text = 'A';
-                    } else if (option.value === 'J' && option.text !== 'J') {
-                        option.text = 'J';
-                    }
-                }
-
-                // Observar cambios en el dropdown
-                dropdown.addEventListener('change', function () {
-                    setTimeout(function () {
-                        if (dropdown.value === 'P' && dropdown.options[dropdown.selectedIndex].text !== 'P') {
-                            dropdown.options[dropdown.selectedIndex].text = 'P';
-                        } else if (dropdown.value === 'A' && dropdown.options[dropdown.selectedIndex].text !== 'A') {
-                            dropdown.options[dropdown.selectedIndex].text = 'A';
-                        } else if (dropdown.value === 'J' && dropdown.options[dropdown.selectedIndex].text !== 'J') {
-                            dropdown.options[dropdown.selectedIndex].text = 'J';
-                        }
-                        aplicarEstiloDropdown(dropdown);
-                    }, 10);
-                });
-
-                aplicarEstiloDropdown(dropdown);
-            });
-        }
-
         function actualizarResumen() {
             var presentes = 0;
             var ausentes = 0;
             var justificados = 0;
+            var sinSeleccionar = 0;
 
             var dropdowns = document.querySelectorAll('.dropdown-asistencia');
             dropdowns.forEach(function (dropdown) {
                 if (dropdown.value === 'P') presentes++;
                 else if (dropdown.value === 'A') ausentes++;
                 else if (dropdown.value === 'J') justificados++;
+                else sinSeleccionar++;
             });
 
-            document.getElementById('presentCount').innerText = presentes;
-            document.getElementById('absentCount').innerText = ausentes;
-            document.getElementById('justifiedCount').innerText = justificados;
+            // Actualizar contadores
+            if (document.getElementById('presentCount')) {
+                document.getElementById('presentCount').innerText = presentes;
+            }
+            if (document.getElementById('absentCount')) {
+                document.getElementById('absentCount').innerText = ausentes;
+            }
+            if (document.getElementById('justifiedCount')) {
+                document.getElementById('justifiedCount').innerText = justificados;
+            }
+            if (document.getElementById('totalAlumnos')) {
+                document.getElementById('totalAlumnos').innerText = dropdowns.length;
+            }
         }
 
-        // Solución definitiva: modificar el HTML entities en el code-behind
-        function forzarTextoDefinitivo() {
+        function inicializarDropdowns() {
             var dropdowns = document.querySelectorAll('.dropdown-asistencia');
             dropdowns.forEach(function (dropdown) {
-                for (var i = 0; i < dropdown.options.length; i++) {
-                    var option = dropdown.options[i];
-                    // Reemplazar cualquier texto por el correcto
-                    if (option.value === 'P') {
-                        option.text = 'P';
-                        option.innerHTML = 'P'; // Forzar HTML interno también
-                    } else if (option.value === 'A') {
-                        option.text = 'A';
-                        option.innerHTML = 'A';
-                    } else if (option.value === 'J') {
-                        option.text = 'J';
-                        option.innerHTML = 'J';
-                    }
-                }
+                // Aplicar estilo inicial basado en el valor actual
                 aplicarEstiloDropdown(dropdown);
+
+                // Configurar evento change
+                dropdown.addEventListener('change', function () {
+                    aplicarEstiloDropdown(this);
+                    actualizarResumen();
+                });
             });
+
+            actualizarResumen();
         }
 
-        // Inicializar
+        // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function () {
-            forzarTextoDefinitivo();
-            actualizarResumen();
-
-            // Monitorear cambios continuamente
-            setInterval(forzarTextoDefinitivo, 100);
+            inicializarDropdowns();
         });
 
-        // Para postbacks de UpdatePanel
+        // Para postbacks de ASP.NET
         if (typeof (Sys) !== 'undefined') {
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-                forzarTextoDefinitivo();
-                actualizarResumen();
+                inicializarDropdowns();
             });
         }
-</script>
+
+        // Función para formatear fecha
+        function formatearFecha(fechaStr) {
+            if (!fechaStr) return '';
+            var fecha = new Date(fechaStr);
+            return fecha.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    </script>
 </asp:Content>

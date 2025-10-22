@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AltaAlumnos.aspx" />
+    <Content Include="AltaPersonal.aspx" />
     <Content Include="Asistencia.aspx" />
     <Content Include="AsistenciaProfe.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
@@ -96,6 +97,13 @@
     </Compile>
     <Compile Include="AltaAlumnos.aspx.designer.cs">
       <DependentUpon>AltaAlumnos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AltaPersonal.aspx.cs">
+      <DependentUpon>AltaPersonal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AltaPersonal.aspx.designer.cs">
+      <DependentUpon>AltaPersonal.aspx</DependentUpon>
     </Compile>
     <Compile Include="Asistencia.aspx.cs">
       <DependentUpon>Asistencia.aspx</DependentUpon>

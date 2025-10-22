@@ -13,6 +13,24 @@ namespace proyectoPracticaProfecional {
     public partial class Asistencia {
         
         /// <summary>
+        /// Control pnlMensaje.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlMensaje;
+        
+        /// <summary>
+        /// Control lblMensaje.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMensaje;
+        
+        /// <summary>
         /// Control ddlCurso.
         /// </summary>
         /// <remarks>
@@ -40,6 +58,24 @@ namespace proyectoPracticaProfecional {
         protected global::System.Web.UI.WebControls.Button btnCargar;
         
         /// <summary>
+        /// Control pnlFechaSeleccionada.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFechaSeleccionada;
+        
+        /// <summary>
+        /// Control lblFechaSeleccionada.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFechaSeleccionada;
+        
+        /// <summary>
         /// Control pnlEmpty.
         /// </summary>
         /// <remarks>
@@ -49,13 +85,13 @@ namespace proyectoPracticaProfecional {
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
         
         /// <summary>
-        /// Control tblAsistencia.
+        /// Control gvAsistencia.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Table tblAsistencia;
+        protected global::System.Web.UI.WebControls.GridView gvAsistencia;
         
         /// <summary>
         /// Control btnGuardar.

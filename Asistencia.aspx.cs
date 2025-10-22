@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Globalization;
 using System.Data;
 
 namespace proyectoPracticaProfecional
@@ -13,8 +12,8 @@ namespace proyectoPracticaProfecional
     public partial class Asistencia : System.Web.UI.Page
     {
         private static string Cadena = ConfigurationManager.ConnectionStrings["Cadenaint46"].ConnectionString;
-        private List<DateTime> DiasDelMes = new List<DateTime>();
         private List<Alumno> Alumnos = new List<Alumno>();
+        private DateTime? FechaSeleccionada = null;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,7 +22,17 @@ namespace proyectoPracticaProfecional
                 CargarCursos();
                 txtFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
                 pnlEmpty.Visible = true;
-                tblAsistencia.Visible = false;
+                gvAsistencia.Visible = false;
+                pnlMensaje.Visible = false;
+                pnlFechaSeleccionada.Visible = false;
+            }
+            else
+            {
+                // Recuperar datos de sesión en postback
+                if (Session["Alumnos"] != null)
+                    Alumnos = (List<Alumno>)Session["Alumnos"];
+                if (Session["FechaSeleccionada"] != null)
+                    FechaSeleccionada = (DateTime)Session["FechaSeleccionada"];
             }
         }
 
@@ -37,18 +46,14 @@ namespace proyectoPracticaProfecional
                 using (SqlConnection conexion = new SqlConnection(Cadena))
                 {
                     conexion.Open();
-
-                    string query = "SELECT DISTINCT curso FROM CURSOS ";
-
+                    string query = "SELECT DISTINCT curso FROM CURSOS";
                     using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                string nombreCurso = reader["curso"].ToString();
-                                ddlCurso.Items.Add(new ListItem(nombreCurso, nombreCurso));
-                            }
+                            string nombreCurso = reader["curso"].ToString();
+                            ddlCurso.Items.Add(new ListItem(nombreCurso, nombreCurso));
                         }
                     }
                 }
@@ -56,25 +61,14 @@ namespace proyectoPracticaProfecional
             catch (Exception ex)
             {
                 MostrarMensaje("Error al cargar cursos: " + ex.Message, "error");
-                //CargarCursosEjemplo();
             }
         }
-
-        //private void CargarCursosEjemplo()
-        //{
-        //    ddlCurso.Items.Clear();
-        //    ddlCurso.Items.Add(new ListItem("Seleccionar curso", ""));
-        //    ddlCurso.Items.Add(new ListItem("Programación", "Programación"));
-        //    ddlCurso.Items.Add(new ListItem("Historia", "Historia"));
-        //    ddlCurso.Items.Add(new ListItem("Biología", "Biología"));
-        //    ddlCurso.Items.Add(new ListItem("Psicopedagogía", "Psicopedagogía"));
-        //}
 
         protected void btnCargar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (ddlCurso.SelectedValue == "")
+                if (string.IsNullOrEmpty(ddlCurso.SelectedValue) || ddlCurso.SelectedValue == "")
                 {
                     MostrarMensaje("Por favor seleccione un curso", "warning");
                     return;
@@ -86,13 +80,26 @@ namespace proyectoPracticaProfecional
                     return;
                 }
 
-                DateTime fechaSeleccionada = DateTime.Parse(txtFecha.Text);
-                DiasDelMes = ObtenerDiasLaborablesMes(fechaSeleccionada.Year, fechaSeleccionada.Month);
+                // Fecha seleccionada
+                FechaSeleccionada = DateTime.Parse(txtFecha.Text);
+                Session["FechaSeleccionada"] = FechaSeleccionada;
+
+                // Mostrar fecha formateada
+                CultureInfo cultura = new CultureInfo("es-ES");
+                lblFechaSeleccionada.Text = FechaSeleccionada.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy", cultura);
+                pnlFechaSeleccionada.Visible = true;
+
+                // Cargar alumnos del curso
                 CargarAlumnosDelCurso();
+
+                // Generar la tabla de asistencia
                 GenerarGridAsistencia();
 
+                // Mostrar panel de tabla
                 pnlEmpty.Visible = false;
-                tblAsistencia.Visible = true;
+                gvAsistencia.Visible = true;
+
+                MostrarMensaje("Asistencia cargada para " + Alumnos.Count.ToString() + " alumnos", "info");
             }
             catch (Exception ex)
             {
@@ -102,17 +109,29 @@ namespace proyectoPracticaProfecional
 
         private void CargarAlumnosDelCurso()
         {
+            string cursoSeleccionado = ddlCurso.SelectedValue;
+
+            if (string.IsNullOrEmpty(cursoSeleccionado) || cursoSeleccionado == "Seleccionar curso")
+            {
+                MostrarMensaje("Seleccione un curso válido.", "error");
+                return;
+            }
+
             Alumnos = new List<Alumno>();
 
             using (SqlConnection conexion = new SqlConnection(Cadena))
             {
                 conexion.Open();
-
-                string query = "select  nombre, apellido from ALUMNOS inner join CURSOS on ALUMNOS.LEGAJO=CURSOS.LEGAJO WHERE CURSO='"+ddlCurso.Text+"'";
+                string query = @"
+                    SELECT A.LEGAJO, A.NOMBRE, A.APELLIDO, C.ID_CURSO
+                    FROM ALUMNOS A
+                    INNER JOIN CURSOS C ON A.LEGAJO = C.LEGAJO
+                    WHERE C.CURSO = @Curso
+                    ORDER BY A.APELLIDO, A.NOMBRE";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
-                    cmd.Parameters.AddWithValue("@Curso", ddlCurso.SelectedValue);
+                    cmd.Parameters.AddWithValue("@Curso", cursoSeleccionado);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -120,9 +139,11 @@ namespace proyectoPracticaProfecional
                         {
                             Alumno alumno = new Alumno
                             {
-                               
-                                Nombre = reader["nombre"].ToString(),
-                                Apellido = reader["apellido"].ToString()
+                                Legajo = Convert.ToInt32(reader["LEGAJO"]),
+                                Nombre = reader["NOMBRE"].ToString(),
+                                Apellido = reader["APELLIDO"].ToString(),
+                                Id_Curso = Convert.ToInt32(reader["ID_CURSO"]),
+                                NombreCompleto = reader["APELLIDO"].ToString() + ", " + reader["NOMBRE"].ToString()
                             };
                             Alumnos.Add(alumno);
                         }
@@ -130,154 +151,65 @@ namespace proyectoPracticaProfecional
                 }
             }
 
+            Session["Alumnos"] = Alumnos;
+
             if (Alumnos.Count == 0)
-            {
                 MostrarMensaje("No se encontraron alumnos para el curso seleccionado", "warning");
-            }
         }
 
         private void GenerarGridAsistencia()
         {
-            tblAsistencia.Rows.Clear();
+            if (FechaSeleccionada == null || Alumnos == null)
+                return;
 
-            TableHeaderRow headerRow = new TableHeaderRow();
-            headerRow.CssClass = "grid-header";
-
-            TableHeaderCell headerAlumno = new TableHeaderCell();
-            headerAlumno.Text = "Alumno";
-            headerAlumno.CssClass = "header-alumno";
-            headerAlumno.Style.Add("min-width", "250px");
-            headerRow.Cells.Add(headerAlumno);
-
-            CultureInfo cultura = new CultureInfo("es-ES");
-
-            foreach (DateTime dia in DiasDelMes)
-            {
-                TableHeaderCell headerDia = new TableHeaderCell();
-
-                string nombreDia = cultura.DateTimeFormat.GetAbbreviatedDayName(dia.DayOfWeek);
-                string fechaCorta = dia.ToString("d MMM", cultura);
-
-                headerDia.Text = string.Format("{0}<br/><small>{1}</small>", nombreDia, fechaCorta);
-                headerDia.CssClass = "header-dia";
-                headerDia.ToolTip = dia.ToString("dddd d 'de' MMMM 'de' yyyy", cultura);
-                headerRow.Cells.Add(headerDia);
-            }
-
-            tblAsistencia.Rows.Add(headerRow);
+            // Crear DataTable para el GridView
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Id", typeof(int));
+            dt.Columns.Add("NombreCompleto", typeof(string));
+            dt.Columns.Add("EstadoAsistencia", typeof(string));
 
             foreach (Alumno alumno in Alumnos)
             {
-                TableRow row = new TableRow();
-                row.CssClass = "grid-row";
+                // Obtener estado de asistencia existente para esta fecha
+                string estadoExistente = ObtenerEstadoAsistencia(alumno.Legajo, FechaSeleccionada.Value);
 
-                TableCell cellAlumno = new TableCell();
-                cellAlumno.Text = alumno.Apellido + ", " + alumno.Nombre;
-                cellAlumno.CssClass = "student-name";
-                row.Cells.Add(cellAlumno);
-
-                for (int i = 0; i < DiasDelMes.Count; i++)
-                {
-                    TableCell cellDia = new TableCell();
-                    cellDia.CssClass = "dia-cell";
-
-                    // CREAR Y CONFIGURAR EL DROPDOWNLIST
-                    DropDownList ddl = CrearDropDownListAsistencia(alumno.Legajo, i, DiasDelMes[i]);
-
-                    cellDia.Controls.Add(ddl);
-                    row.Cells.Add(cellDia);
-                }
-
-                tblAsistencia.Rows.Add(row);
+                DataRow row = dt.NewRow();
+                row["Id"] = alumno.Legajo;
+                row["NombreCompleto"] = alumno.NombreCompleto;
+                row["EstadoAsistencia"] = estadoExistente; // CORREGIDO: estadoExistente en lugar de estadoExistencia
+                dt.Rows.Add(row);
             }
 
+            gvAsistencia.DataSource = dt;
+            gvAsistencia.DataBind();
+
+            // Actualizar contadores
             totalAlumnos.InnerText = Alumnos.Count.ToString();
             ActualizarContadoresResumen();
-
-            ScriptManager.RegisterStartupScript(this, GetType(), "initStyles",
-                "setTimeout(function(){ forzarTextoDefinitivo(); actualizarResumen(); }, 100);", true);
         }
 
-        private DropDownList CrearDropDownListAsistencia(int legajo, int indiceDia, DateTime fecha)
+        protected void gvAsistencia_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            DropDownList ddl = new DropDownList();
-            ddl.CssClass = "dropdown-asistencia";
-            ddl.ID = "ddl_" + legajo.ToString() + "_" + indiceDia.ToString();
-
-            // CONFIGURAR LAS OPCIONES DEL DROPDOWN
-            ConfigurarOpcionesDropDown(ddl);
-
-            // CARGAR VALOR EXISTENTE O VALOR POR DEFECTO
-            CargarValorDropDown(ddl, legajo, fecha);
-
-            // AGREGAR EVENTO ONCHANGE
-            ddl.Attributes["onchange"] = "aplicarEstiloDropdown(this); actualizarResumen();";
-
-            return ddl;
-        }
-
-        private void ConfigurarOpcionesDropDown(DropDownList ddl)
-        {
-            // LIMPIAR OPCIONES EXISTENTES
-            ddl.Items.Clear();
-
-            // AGREGAR OPCIONES CON VALOR Y TEXTO
-            ddl.Items.Add(new ListItem("P", "P"));
-            ddl.Items.Add(new ListItem("A", "A"));
-            ddl.Items.Add(new ListItem("J", "J"));
-
-            // CONFIGURAR PROPIEDADES ADICIONALES
-            ddl.Width = Unit.Pixel(70);
-            ddl.AutoPostBack = false;
-        }
-
-        private void CargarValorDropDown(DropDownList ddl, int legajo, DateTime fecha)
-        {
-            try
+            if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                // OBTENER VALOR EXISTENTE DE LA BASE DE DATOS
-                string estadoExistente = ObtenerEstadoAsistencia(legajo, fecha);
+                DropDownList ddlEstadoAsistencia = (DropDownList)e.Row.FindControl("ddlEstadoAsistencia");
+                HiddenField hfAlumnoId = (HiddenField)e.Row.FindControl("hfAlumnoId");
 
-                if (!string.IsNullOrEmpty(estadoExistente))
+                if (ddlEstadoAsistencia != null)
                 {
-                    // SI EXISTE UN VALOR EN LA BD, SELECCIONARLO
-                    if (ddl.Items.FindByValue(estadoExistente) != null)
+                    // Configurar el valor seleccionado
+                    DataRowView rowView = (DataRowView)e.Row.DataItem;
+                    string estadoActual = rowView["EstadoAsistencia"].ToString();
+
+                    if (!string.IsNullOrEmpty(estadoActual))
                     {
-                        ddl.SelectedValue = estadoExistente;
+                        ddlEstadoAsistencia.SelectedValue = estadoActual;
                     }
-                    else
-                    {
-                        ddl.SelectedValue = "P"; // VALOR POR DEFECTO
-                    }
-                }
-                else
-                {
-                    // SI NO EXISTE, USAR VALOR POR DEFECTO
-                    ddl.SelectedValue = "P";
-                }
-            }
-            catch (Exception ex)
-            {
-                // EN CASO DE ERROR, USAR VALOR POR DEFECTO
-                ddl.SelectedValue = "P";
-                System.Diagnostics.Debug.WriteLine("Error al cargar valor dropdown: " + ex.Message);
-            }
-        }
 
-        private List<DateTime> ObtenerDiasLaborablesMes(int año, int mes)
-        {
-            List<DateTime> diasLaborables = new List<DateTime>();
-            DateTime primerDia = new DateTime(año, mes, 1);
-            DateTime ultimoDia = primerDia.AddMonths(1).AddDays(-1);
-
-            for (DateTime dia = primerDia; dia <= ultimoDia; dia = dia.AddDays(1))
-            {
-                if (dia.DayOfWeek != DayOfWeek.Saturday && dia.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    diasLaborables.Add(dia);
+                    // Agregar evento JavaScript
+                    ddlEstadoAsistencia.Attributes["onchange"] = "aplicarEstiloDropdown(this)";
                 }
             }
-            return diasLaborables;
         }
 
         private string ObtenerEstadoAsistencia(int legajo, DateTime fecha)
@@ -287,7 +219,7 @@ namespace proyectoPracticaProfecional
                 using (SqlConnection conexion = new SqlConnection(Cadena))
                 {
                     conexion.Open();
-                    string query = "SELECT estado FROM ASISTENCIA WHERE legajo_alumno = @Legajo AND fecha = @Fecha";
+                    string query = "SELECT PRESENTE FROM ASISTENCIA WHERE LEGAJO = '@Legajo' AND FECHA = '@Fecha'";
 
                     using (SqlCommand cmd = new SqlCommand(query, conexion))
                     {
@@ -295,14 +227,21 @@ namespace proyectoPracticaProfecional
                         cmd.Parameters.AddWithValue("@Fecha", fecha.Date);
 
                         object resultado = cmd.ExecuteScalar();
-                        return resultado != null ? resultado.ToString() : null;
+                        if (resultado != null)
+                        {
+                            int presente = Convert.ToInt32(resultado);
+                            return presente == 1 ? "P" : "A";
+                        }
+                        else
+                        {
+                            return ""; // Valor por defecto vacío
+                        }
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine("Error al obtener asistencia: " + ex.Message);
-                return null;
+                return ""; // En caso de error, retornar vacío
             }
         }
 
@@ -310,157 +249,145 @@ namespace proyectoPracticaProfecional
         {
             try
             {
-                if (!ValidarDatos())
-                    return;
+                // Recuperar datos desde sesión
+                if (Session["Alumnos"] != null)
+                    Alumnos = (List<Alumno>)Session["Alumnos"];
+                if (Session["FechaSeleccionada"] != null)
+                    FechaSeleccionada = (DateTime)Session["FechaSeleccionada"];
 
-                // CAPTURAR TODOS LOS VALORES DE LOS DROPDOWNLIST
-                Dictionary<string, string> valoresCapturados = CapturarValoresDropDowns();
+                // Validaciones
+                if (Alumnos == null || Alumnos.Count == 0)
+                {
+                    MostrarMensaje("No hay alumnos para guardar.", "error");
+                    return;
+                }
+
+                if (FechaSeleccionada == null)
+                {
+                    MostrarMensaje("No hay fecha seleccionada.", "error");
+                    return;
+                }
 
                 int registrosGuardados = 0;
+                int registrosConError = 0;
 
-                foreach (Alumno alumno in Alumnos)
+                // Recorrer el GridView para obtener los valores
+                foreach (GridViewRow row in gvAsistencia.Rows)
                 {
-                    for (int i = 0; i < DiasDelMes.Count; i++)
+                    if (row.RowType == DataControlRowType.DataRow)
                     {
-                        string clave = "ddl_" + alumno.Legajo.ToString() + "_" + i.ToString();
+                        DropDownList ddlEstadoAsistencia = (DropDownList)row.FindControl("ddlEstadoAsistencia");
+                        HiddenField hfAlumnoId = (HiddenField)row.FindControl("hfAlumnoId");
 
-                        // BUSCAR EL VALOR EN EL DICCIONARIO
-                        if (valoresCapturados.ContainsKey(clave))
+                        if (ddlEstadoAsistencia != null && hfAlumnoId != null)
                         {
-                            string valorSeleccionado = valoresCapturados[clave];
+                            int legajo = Convert.ToInt32(hfAlumnoId.Value);
+                            string estado = ddlEstadoAsistencia.SelectedValue;
+                            Alumno alumno = Alumnos.Find(a => a.Legajo == legajo);
 
-                            if (!string.IsNullOrEmpty(valorSeleccionado))
+                            if (alumno != null && !string.IsNullOrEmpty(estado))
                             {
-                                if (GuardarAsistenciaBD(alumno.Legajo, DiasDelMes[i], valorSeleccionado))
+                                if (GuardarAsistenciaBD(alumno.Legajo, alumno.Id_Curso, FechaSeleccionada.Value, estado))
                                     registrosGuardados++;
+                                else
+                                    registrosConError++;
                             }
                         }
                     }
                 }
 
-                MostrarMensaje("Asistencia guardada correctamente. " + registrosGuardados.ToString() + " registros actualizados.", "success");
+                // Mostrar mensaje según resultados
+                if (registrosGuardados > 0)
+                {
+                    string mensaje = "Asistencia guardada correctamente. " + registrosGuardados.ToString() + " registros actualizados.";
+                    if (registrosConError > 0)
+                        mensaje += " " + registrosConError.ToString() + " registros con errores.";
 
-                // MOSTRAR VALORES CAPTURADOS (PARA DEBUG)
-                MostrarValoresCapturados(valoresCapturados);
+                    MostrarMensaje(mensaje, "success");
+                }
+                else
+                {
+                    MostrarMensaje("No se guardó ninguna asistencia.", "warning");
+                }
             }
             catch (Exception ex)
             {
-                MostrarMensaje("Error al guardar: " + ex.Message, "error");
+                MostrarMensaje("Error al guardar asistencia: " + ex.Message, "error");
             }
         }
 
-        private Dictionary<string, string> CapturarValoresDropDowns()
+        private bool GuardarAsistenciaBD(int legajo, int Id_Curso, DateTime fecha, string estado)
         {
-            Dictionary<string, string> valores = new Dictionary<string, string>();
-
-            // RECORRER TODAS LAS FILAS DE LA TABLA
-            foreach (TableRow row in tblAsistencia.Rows)
+            try
             {
-                if (row is TableHeaderRow)
-                    continue;
-
-                // RECORRER TODAS LAS CELDAS (OMITIENDO LA PRIMERA QUE ES EL NOMBRE)
-                for (int i = 1; i < row.Cells.Count; i++)
+                using (SqlConnection conexion = new SqlConnection(Cadena))
                 {
-                    TableCell cell = row.Cells[i];
+                    conexion.Open();
 
-                    if (cell.Controls.Count > 0 && cell.Controls[0] is DropDownList)
+                    // VERIFICAR SI YA EXISTE el registro
+                    string checkQuery = "SELECT COUNT(1) FROM ASISTENCIA WHERE LEGAJO = @Legajo AND FECHA = @Fecha";
+
+                    using (SqlCommand checkCmd = new SqlCommand(checkQuery, conexion))
                     {
-                        DropDownList ddl = (DropDownList)cell.Controls[0];
-                        valores[ddl.ID] = ddl.SelectedValue;
+                        checkCmd.Parameters.AddWithValue("@Legajo", legajo);
+                        checkCmd.Parameters.AddWithValue("@Fecha", fecha.Date);
+
+                        bool existe = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+
+                        string query;
+                        if (existe)
+                        {
+                            // UPDATE si existe
+                            query = @"UPDATE ASISTENCIA 
+                                     SET PRESENTE = @Presente, ID_CURSO = @IdCurso
+                                     WHERE LEGAJO = @Legajo AND FECHA = @Fecha";
+                        }
+                        else
+                        {
+                            // INSERT si no existe
+                            query = @"INSERT INTO ASISTENCIA (LEGAJO, ID_CURSO, FECHA, PRESENTE)
+                                     VALUES (@Legajo, @IdCurso, @Fecha, @Presente)";
+                        }
+
+                        using (SqlCommand cmd = new SqlCommand(query, conexion))
+                        {
+                            cmd.Parameters.AddWithValue("@Legajo", legajo);
+                            cmd.Parameters.AddWithValue("@IdCurso", Id_Curso);
+                            cmd.Parameters.AddWithValue("@Fecha", fecha.Date);
+
+                            // Convertir estado a valor booleano para la base de datos
+                            int presente = (estado == "P") ? 1 : 0;
+                            cmd.Parameters.AddWithValue("@Presente", presente);
+
+                            return cmd.ExecuteNonQuery() > 0;
+                        }
                     }
                 }
             }
-
-            return valores;
-        }
-
-        private void MostrarValoresCapturados(Dictionary<string, string> valores)
-        {
-            // ESTE MÉTODO ES PARA DEBUG - PUEDES ELIMINARLO EN PRODUCCIÓN
-            System.Diagnostics.Debug.WriteLine("=== VALORES CAPTURADOS DE DROPDOWNS ===");
-            foreach (var valor in valores)
+            catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("ID: " + valor.Key + " - Valor: " + valor.Value);
-            }
-            System.Diagnostics.Debug.WriteLine("Total de dropdowns capturados: " + valores.Count);
-        }
-
-        private bool GuardarAsistenciaBD(int legajo, DateTime fecha, string estado)
-        {
-            using (SqlConnection conexion = new SqlConnection(Cadena))
-            {
-                conexion.Open();
-
-                string query = "MERGE ASISTENCIA AS target " +
-                               "USING (VALUES (@Legajo, @Fecha, @Estado)) AS source (legajo_alumno, fecha, estado) " +
-                               "ON target.legajo_alumno = source.legajo_alumno AND target.fecha = source.fecha " +
-                               "WHEN MATCHED THEN " +
-                               "    UPDATE SET estado = source.estado, fecha_modificacion = GETDATE() " +
-                               "WHEN NOT MATCHED THEN " +
-                               "    INSERT (legajo_alumno, fecha, estado, fecha_creacion) " +
-                               "    VALUES (source.legajo_alumno, source.fecha, source.estado, GETDATE());";
-
-                using (SqlCommand cmd = new SqlCommand(query, conexion))
-                {
-                    cmd.Parameters.AddWithValue("@Legajo", legajo);
-                    cmd.Parameters.AddWithValue("@Fecha", fecha.Date);
-                    cmd.Parameters.AddWithValue("@Estado", estado);
-
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
-
-        private bool ValidarDatos()
-        {
-            if (Alumnos == null || Alumnos.Count == 0)
-            {
-                MostrarMensaje("No hay alumnos para guardar", "warning");
+                // Log del error (en producción usar un logger)
+                System.Diagnostics.Debug.WriteLine("Error BD: " + ex.Message);
                 return false;
             }
-
-            if (DiasDelMes == null || DiasDelMes.Count == 0)
-            {
-                MostrarMensaje("No hay días seleccionados", "warning");
-                return false;
-            }
-
-            return true;
         }
 
         private void ActualizarContadoresResumen()
         {
+            if (FechaSeleccionada == null) return;
+
             int presentes = 0;
             int ausentes = 0;
             int justificados = 0;
 
-            foreach (TableRow row in tblAsistencia.Rows)
+            foreach (Alumno alumno in Alumnos)
             {
-                if (row is TableHeaderRow)
-                    continue;
-
-                for (int i = 1; i < row.Cells.Count; i++)
+                string estado = ObtenerEstadoAsistencia(alumno.Legajo, FechaSeleccionada.Value);
+                switch (estado)
                 {
-                    TableCell cell = row.Cells[i];
-
-                    if (cell.Controls.Count > 0 && cell.Controls[0] is DropDownList)
-                    {
-                        DropDownList ddl = (DropDownList)cell.Controls[0];
-
-                        switch (ddl.SelectedValue)
-                        {
-                            case "P":
-                                presentes++;
-                                break;
-                            case "A":
-                                ausentes++;
-                                break;
-                            case "J":
-                                justificados++;
-                                break;
-                        }
-                    }
+                    case "P": presentes++; break;
+                    case "A": ausentes++; break;
+                    case "J": justificados++; break;
                 }
             }
 
@@ -471,18 +398,46 @@ namespace proyectoPracticaProfecional
 
         private void MostrarMensaje(string mensaje, string tipo)
         {
-            string script = "alert('" + mensaje.Replace("'", "\\'") + "');";
-            ScriptManager.RegisterStartupScript(this, GetType(), tipo, script, true);
+            pnlMensaje.Visible = true;
+            lblMensaje.Text = mensaje;
+
+            switch (tipo.ToLower())
+            {
+                case "success":
+                case "ok":
+                case "info":
+                    pnlMensaje.CssClass = "mensaje-exito";
+                    break;
+                case "error":
+                    pnlMensaje.CssClass = "mensaje-error";
+                    break;
+                case "warning":
+                    pnlMensaje.CssClass = "mensaje-error";
+                    break;
+                default:
+                    pnlMensaje.CssClass = "mensaje-exito";
+                    break;
+            }
+
+            // Ocultar mensaje después de 5 segundos
+            ScriptManager.RegisterStartupScript(this, GetType(), "hideMessage",
+                "setTimeout(function() { document.getElementById('" + pnlMensaje.ClientID + "').style.display = 'none'; }, 5000);", true);
+        }
+
+        protected void ddlCurso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Lógica opcional para recargar automáticamente
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
+            // Limpiar y recargar
             Response.Redirect(Request.Url.AbsoluteUri);
         }
 
         protected void btnExcel_Click(object sender, EventArgs e)
         {
-            if (Alumnos.Count == 0)
+            if (Alumnos == null || Alumnos.Count == 0)
             {
                 MostrarMensaje("No hay datos para exportar", "warning");
                 return;
@@ -490,12 +445,14 @@ namespace proyectoPracticaProfecional
 
             MostrarMensaje("Funcionalidad de exportación a Excel - En desarrollo", "info");
         }
-    }
 
-    public class Alumno
-    {
-        public int Legajo { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public class Alumno
+        {
+            public int Legajo { get; set; }
+            public string Nombre { get; set; }
+            public string Apellido { get; set; }
+            public int Id_Curso { get; set; }
+            public string NombreCompleto { get; set; }
+        }
     }
 }
