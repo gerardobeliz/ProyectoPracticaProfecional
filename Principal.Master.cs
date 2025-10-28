@@ -99,24 +99,20 @@ namespace proyectoPracticaProfecional
             {
                 var menudirectivo = new List<MenuItem> {  
               new MenuItem { 
-                        Nombre = "Modificar/eliminar Alumno", 
-                        Url = "ModificarAlumno.aspx", 
-                        Icono = "fa-trash"  
-                    },
-                    new MenuItem { 
                         Nombre = "personal", 
                         Url = "AltaPersonal.aspx", 
                         Icono = "fa-briefcase" 
                     },
                     new MenuItem { 
-                        Nombre = "profesores", 
-                        Url = "profesores.aspx", 
+                        Nombre = "Editar personal", 
+                        Url = "EditarPersonal.aspx", 
                         Icono = "fa-sticky-note" 
                     },
-                    new MenuItem { 
-                        Nombre = "preseptores", 
-                        Url = "Cursos.aspx", 
-                        Icono = "fa-book" 
+                    
+                     new MenuItem { 
+                        Nombre = "Eliminar Personal", 
+                        Url = "EliminarEmpleado.aspx", 
+                        Icono = "fa-trash"  
                     },
               };
                 CrearMenu(menudirectivo);

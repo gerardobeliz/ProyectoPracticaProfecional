@@ -35,8 +35,9 @@ namespace proyectoPracticaProfecional
 
                             int numTel;
                             numTel = int.Parse(txtTelefono.Text);
-                            string script = String.Format("INSERT INTO PERSONAL VALUES ({0}, '{1}', GETDATE(), '{2}', '{3}', '{4}', {5}, {6}, '{7}', '{8}', '{9}')",
-                                ddlTipoPersonal.SelectedValue,txtDocumento.Text,txtFechaIngreso.Text,                   txtApellido.Text, txtDireccion.Text, 1754, numTel, ddlGenero.Text,  txtEmail.Text);
+                            string script = String.Format("INSERT INTO PERSONAL VALUES ('{0}','{1}','{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}','{9}','{10}')",
+                                ddlTipoPersonal.SelectedValue, txtDocumento.Text, txtFechaNacimiento.Text, txtFechaIngreso.Text, txtNombre.Text, txtApellido.Text,
+                                txtDireccion.Text, txtCodigoPostal.Text, numTel, txtEmail.Text, txtPassword.Text);
 
                             conexion.Open();
                             SqlCommand command = new SqlCommand(script, conexion);
@@ -48,7 +49,6 @@ namespace proyectoPracticaProfecional
                             pnlErrorMessage.Visible = false;
                         }
 
-                        LimpiarFormulario();
                     }
                     catch (Exception ex)
                     {
@@ -58,13 +58,13 @@ namespace proyectoPracticaProfecional
                     }
                                   
                     // Mostrar modal de confirmación
-                    //string script = string.Format("showConfirmation('{0}', '{1}', '{2}', '{3}');", 
-                    //    txtNombre.Text + " " + txtApellido.Text, 
-                    //    ddlTipoPersonal.SelectedItem.Text, 
-                    //    txtEmail.Text, 
-                    //    txtFechaIngreso.Text);
-                    
-                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "showConfirmation", script, true);
+                    string script2 = string.Format("showConfirmation('{0}', '{1}', '{2}', '{3}');",
+                        txtNombre.Text + " " + txtApellido.Text,
+                        ddlTipoPersonal.SelectedItem.Text,
+                        txtEmail.Text,
+                        txtFechaIngreso.Text);
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showConfirmation", script2, true);
                     
                     // Limpiar formulario después de guardar
                     LimpiarFormulario();

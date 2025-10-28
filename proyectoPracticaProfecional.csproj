@@ -67,6 +67,7 @@
     <Content Include="css\style.css" />
     <Content Include="default.aspx" />
     <Content Include="Directivo.aspx" />
+    <Content Include="EditarPersonal.aspx" />
     <Content Include="Global.asax" />
     <Content Include="home.aspx" />
     <Content Include="images\Malvinas.jpg" />
@@ -76,6 +77,7 @@
     <Content Include="js\main.js" />
     <Content Include="js\popper.js" />
     <Content Include="ModificarAlumno.aspx" />
+    <Content Include="EliminarEmpleado.aspx" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.dll" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.pdb" />
@@ -140,6 +142,13 @@
     <Compile Include="Directivo.aspx.designer.cs">
       <DependentUpon>Directivo.aspx</DependentUpon>
     </Compile>
+    <Compile Include="EditarPersonal.aspx.cs">
+      <DependentUpon>EditarPersonal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EditarPersonal.aspx.designer.cs">
+      <DependentUpon>EditarPersonal.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -156,6 +165,13 @@
     </Compile>
     <Compile Include="ModificarAlumno.aspx.designer.cs">
       <DependentUpon>ModificarAlumno.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EliminarEmpleado.aspx.cs">
+      <DependentUpon>EliminarEmpleado.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EliminarEmpleado.aspx.designer.cs">
+      <DependentUpon>EliminarEmpleado.aspx</DependentUpon>
     </Compile>
     <Compile Include="Principal.Master.cs">
       <DependentUpon>Principal.Master</DependentUpon>
