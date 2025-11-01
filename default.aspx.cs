@@ -26,6 +26,49 @@ namespace Instituto46
             }
         }
 
+        //protected void btnLogin_Click(object sender, EventArgs e)
+        //{
+        //    // Validar credenciales
+        //    usuario = txtUsuario.Text.Trim();
+        //    password = txtPassword.Text;
+
+        //    // Aquí iría la lógica de autenticación
+        //    if (AutenticarUsuario(usuario, password) == true)
+        //    // Autenticación exitosa
+        //    {
+
+        //        if (tipoUsuario == "directivo")
+        //        {
+
+        //            Session["Usuario"] = txtUsuario.Text;
+        //            Session["tipo"] = tipoUsuario;
+        //            Response.Redirect("home.aspx");
+
+        //        }
+        //        if (tipoUsuario == "profesor")
+        //        {
+        //            Session["Usuario"] = txtUsuario.Text;
+        //            Session["tipo"] = tipoUsuario;
+        //            Response.Redirect("home.aspx");
+
+        //        }
+        //        if (tipoUsuario == "preceptor")
+        //        {
+        //            Session["Usuario"] = txtUsuario.Text;
+        //            Session["tipo"] = tipoUsuario;
+        //            Response.Redirect("home.aspx");
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        // Mostrar mensaje de error
+        //        ScriptManager.RegisterStartupScript(this, GetType(), "showError",
+        //            "alert('El Usuario y/o Contraseña son incorrectos. Por Favor Intentelo Nuevamente.');", true);
+        //    }
+        //}
+
+        
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             // Validar credenciales
@@ -33,32 +76,28 @@ namespace Instituto46
             password = txtPassword.Text;
 
             // Aquí iría la lógica de autenticación
-            if (AutenticarUsuario(usuario, password) == true)
-            // Autenticación exitosa
+            if (AutenticarUsuario(usuario, password) == true) // Autenticación exitosa
             {
+                // Guardar sesiones comunes
+                Session["Usuario"] = txtUsuario.Text;
+                Session["tipo"] = tipoUsuario;
 
+                // Guardar ID_PERSONAL en sesión
+                Session["id_personal"] = idPersonal; // idPersonal se define en AutenticarUsuario
+
+                // Redirección según tipo
                 if (tipoUsuario == "directivo")
                 {
-
-                    Session["Usuario"] = txtUsuario.Text;
-                    Session["tipo"] = tipoUsuario;
                     Response.Redirect("home.aspx");
-
                 }
-                if (tipoUsuario == "profesor")
+                else if (tipoUsuario == "profesor")
                 {
-                    Session["Usuario"] = txtUsuario.Text;
-                    Session["tipo"] = tipoUsuario;
                     Response.Redirect("home.aspx");
-
                 }
-                if (tipoUsuario == "preceptor")
+                else if (tipoUsuario == "preceptor")
                 {
-                    Session["Usuario"] = txtUsuario.Text;
-                    Session["tipo"] = tipoUsuario;
                     Response.Redirect("home.aspx");
                 }
-
             }
             else
             {
@@ -68,44 +107,31 @@ namespace Instituto46
             }
         }
 
+        private string idPersonal = string.Empty; // <-- Variable para guardar ID_PERSONAL
+
         private bool AutenticarUsuario(string usuario, string password)
         {
-            // Acá iría la conexión y la autenticación en la base de datos
-
             using (SqlConnection conexion = new SqlConnection(Cadena))
             {
                 string script = String.Format("SELECT ID_PERSONAL, NOMBRE, PASS, TIPO FROM PERSONAL WHERE NOMBRE = '{0}' AND PASS = '{1}'", txtUsuario.Text, txtPassword.Text);
 
-                
                 conexion.Open();
-
                 SqlCommand command = new SqlCommand(script, conexion);
-
                 SqlDataReader reader = command.ExecuteReader();
-
-                string id = String.Empty;
 
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        id = reader.GetInt32(0).ToString();
+                        idPersonal = reader.GetInt32(0).ToString(); // <-- Guardar ID_PERSONAL
                         tipoUsuario = reader.GetString(3);
-
                     }
                 }
 
                 reader.Close();
                 conexion.Close();
 
-                if (id != String.Empty)
-                {
-
-                    return (true); // Cambio el usuario 
-                }
-                else
-                    return (false); // Cambiado el usuario
-
+                return !string.IsNullOrEmpty(idPersonal);
             }
         }
 

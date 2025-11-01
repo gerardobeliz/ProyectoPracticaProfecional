@@ -99,12 +99,12 @@ namespace proyectoPracticaProfecional
             {
                 var menudirectivo = new List<MenuItem> {  
               new MenuItem { 
-                        Nombre = "personal", 
+                        Nombre = "Alta Personal", 
                         Url = "AltaPersonal.aspx", 
                         Icono = "fa-briefcase" 
                     },
                     new MenuItem { 
-                        Nombre = "Editar personal", 
+                        Nombre = "Buscar Editar personal", 
                         Url = "EditarPersonal.aspx", 
                         Icono = "fa-sticky-note" 
                     },
