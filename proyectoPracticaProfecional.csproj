@@ -57,6 +57,7 @@
     <Content Include="AsistenciaProfe.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
     <Content Include="bin\proyectoPracticaProfecional.pdb" />
+    <Content Include="buscaralumnoprofe.aspx" />
     <Content Include="Calendario.aspx" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\bootstrap\mixins\_border-radius.css" />
@@ -78,6 +79,7 @@
     <Content Include="js\popper.js" />
     <Content Include="ModificarAlumno.aspx" />
     <Content Include="EliminarEmpleado.aspx" />
+    <Content Include="NotasProfe.aspx" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.dll" />
     <Content Include="obj\Debug\proyectoPracticaProfecional.pdb" />
@@ -120,6 +122,13 @@
     </Compile>
     <Compile Include="AsistenciaProfe.aspx.designer.cs">
       <DependentUpon>AsistenciaProfe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="buscaralumnoprofe.aspx.cs">
+      <DependentUpon>buscaralumnoprofe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="buscaralumnoprofe.aspx.designer.cs">
+      <DependentUpon>buscaralumnoprofe.aspx</DependentUpon>
     </Compile>
     <Compile Include="Calendario.aspx.cs">
       <DependentUpon>Calendario.aspx</DependentUpon>
@@ -172,6 +181,13 @@
     </Compile>
     <Compile Include="EliminarEmpleado.aspx.designer.cs">
       <DependentUpon>EliminarEmpleado.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="NotasProfe.aspx.cs">
+      <DependentUpon>NotasProfe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NotasProfe.aspx.designer.cs">
+      <DependentUpon>NotasProfe.aspx</DependentUpon>
     </Compile>
     <Compile Include="Principal.Master.cs">
       <DependentUpon>Principal.Master</DependentUpon>

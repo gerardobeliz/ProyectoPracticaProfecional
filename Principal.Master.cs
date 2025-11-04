@@ -50,12 +50,17 @@ namespace proyectoPracticaProfecional
                
                 new MenuItem { 
                     Nombre = "calificar", 
-                    Url = "calificar.aspx", 
+                    Url = "NotasProfe.aspx", 
                     Icono = "fa-briefcase" 
                 },
                 new MenuItem { 
-                    Nombre = "Asistencia", 
+                    Nombre = "Cargar Asistencia", 
                     Url = "AsistenciaProfe.aspx", 
+                    Icono = "fa-sticky-note" 
+                },
+                new MenuItem { 
+                    Nombre = "Buscar alumno ", 
+                    Url = "buscaralumnoprofe.aspx", 
                     Icono = "fa-sticky-note" 
                 },
                 new MenuItem { 
