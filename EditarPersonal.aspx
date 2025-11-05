@@ -74,7 +74,7 @@
                 </div>
 
                 <!-- Panel de Edición -->
-                <div class="col-lg-8 mb-4">
+                <div class="col-lg-10 mb-4">
                     <asp:Panel ID="pnlEdicion" runat="server" Visible="false">
                         <div class="card border-0 shadow-sm rounded-3 border-primary">
                             <div class="card-body p-4">
@@ -104,41 +104,118 @@
                                     
                                     <div class="row">
                                         <!-- Información básica -->
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-4 mb-3">
                                             <label class="form-label small fw-medium">ID / Legajo</label>
                                             <asp:TextBox ID="txtLegajo" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">DNI</label>
-                                            <asp:TextBox ID="txtDocumento" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">Nombre</label>
-                                            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control"></asp:TextBox>
-                                            <asp:RequiredFieldValidator ID="rfvNombre" runat="server" 
-                                                ControlToValidate="txtNombre" ErrorMessage="El nombre es obligatorio" 
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label small fw-medium">DNI *</label>
+                                            <asp:TextBox ID="txtDocumento" runat="server" CssClass="form-control" MaxLength="8"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvDocumento" runat="server" 
+                                                ControlToValidate="txtDocumento" ErrorMessage="El DNI es obligatorio" 
                                                 CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                            <asp:RegularExpressionValidator ID="revDocumento" runat="server"
+                                                ControlToValidate="txtDocumento" ErrorMessage="El DNI debe contener solo números"
+                                                ValidationExpression="^\d+$" CssClass="text-danger small" Display="Dynamic"></asp:RegularExpressionValidator>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">Apellido</label>
-                                            <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control"></asp:TextBox>
-                                            <asp:RequiredFieldValidator ID="rfvApellido" runat="server" 
-                                                ControlToValidate="txtApellido" ErrorMessage="El apellido es obligatorio" 
-                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">Tipo/Cargo</label>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label small fw-medium">Tipo/Cargo *</label>
                                             <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-select">
                                                 <asp:ListItem Text="Seleccione un cargo" Value=""></asp:ListItem>
                                                 <asp:ListItem Text="Administrativo" Value="Administrativo"></asp:ListItem>
                                                 <asp:ListItem Text="Técnico" Value="Técnico"></asp:ListItem>
                                                 <asp:ListItem Text="Operario" Value="Operario"></asp:ListItem>
                                                 <asp:ListItem Text="Supervisor" Value="Supervisor"></asp:ListItem>
+                                                <asp:ListItem Text="Gerente" Value="Gerente"></asp:ListItem>
                                             </asp:DropDownList>
                                             <asp:RequiredFieldValidator ID="rfvCargo" runat="server" 
                                                 ControlToValidate="ddlCargo" ErrorMessage="El cargo es obligatorio" 
                                                 CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
                                         </div>
+
+                                        <!-- Fechas -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Fecha de Nacimiento *</label>
+                                            <asp:TextBox ID="txtFechaNacimiento" runat="server" CssClass="form-control" 
+                                                TextMode="Date"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvFechaNacimiento" runat="server" 
+                                                ControlToValidate="txtFechaNacimiento" ErrorMessage="La fecha de nacimiento es obligatoria" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Fecha de Ingreso *</label>
+                                            <asp:TextBox ID="txtFechaIngreso" runat="server" CssClass="form-control" 
+                                                TextMode="Date"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvFechaIngreso" runat="server" 
+                                                ControlToValidate="txtFechaIngreso" ErrorMessage="La fecha de ingreso es obligatoria" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <!-- Nombre y Apellido -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Nombre *</label>
+                                            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvNombre" runat="server" 
+                                                ControlToValidate="txtNombre" ErrorMessage="El nombre es obligatorio" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Apellido *</label>
+                                            <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvApellido" runat="server" 
+                                                ControlToValidate="txtApellido" ErrorMessage="El apellido es obligatorio" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <!-- Información de contacto -->
+                                        <div class="col-12 mt-3">
+                                            <h6 class="section-title mb-3 text-uppercase small fw-bold text-blue">
+                                                <i class="fas fa-address-card me-2"></i>Información de Contacto
+                                            </h6>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Dirección</label>
+                                            <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" 
+                                                placeholder="Calle, número, piso, departamento"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label small fw-medium">Código Postal</label>
+                                            <asp:TextBox ID="txtCP" runat="server" CssClass="form-control" MaxLength="8"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label small fw-medium">Teléfono</label>
+                                            <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control"></asp:TextBox>
+                                        </div>
+
+                                        <!-- Email y Contraseña -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Email *</label>
+                                            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="rfvEmail" runat="server" 
+                                                ControlToValidate="txtEmail" ErrorMessage="El email es obligatorio" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RequiredFieldValidator>
+                                            <asp:RegularExpressionValidator ID="revEmail" runat="server" 
+                                                ControlToValidate="txtEmail" ErrorMessage="Formato de email inválido" 
+                                                ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
+                                                CssClass="text-danger small" Display="Dynamic"></asp:RegularExpressionValidator>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Contraseña</label>
+                                            <div class="input-group">
+                                                <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" 
+                                                    TextMode="Password" placeholder="Dejar en blanco para no modificar"></asp:TextBox>
+                                                <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Mínimo 6 caracteres. Dejar en blanco para mantener la contraseña actual.</small>
+                                            <asp:RegularExpressionValidator ID="revPassword" runat="server"
+                                                ControlToValidate="txtPassword" ErrorMessage="La contraseña debe tener al menos 6 caracteres"
+                                                ValidationExpression="^.{6,}$" CssClass="text-danger small" Display="Dynamic"></asp:RegularExpressionValidator>
+                                        </div>
+
+                                        <!-- Estado -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label small fw-medium">Estado</label>
                                             <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
@@ -146,30 +223,8 @@
                                                 <asp:ListItem Text="Inactivo" Value="Inactivo"></asp:ListItem>
                                                 <asp:ListItem Text="Vacaciones" Value="Vacaciones"></asp:ListItem>
                                                 <asp:ListItem Text="Licencia" Value="Licencia"></asp:ListItem>
+                                                <asp:ListItem Text="Suspendido" Value="Suspendido"></asp:ListItem>
                                             </asp:DropDownList>
-                                        </div>
-                                        
-                                        <!-- Información adicional -->
-                                        <div class="col-12 mt-3">
-                                            <h6 class="section-title mb-3 text-uppercase small fw-bold text-blue">
-                                                <i class="fas fa-address-card me-2"></i>Información Adicional
-                                            </h6>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">Email</label>
-                                            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox>
-                                            <asp:RegularExpressionValidator ID="revEmail" runat="server" 
-                                                ControlToValidate="txtEmail" ErrorMessage="Formato de email inválido" 
-                                                ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
-                                                CssClass="text-danger small" Display="Dynamic"></asp:RegularExpressionValidator>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label small fw-medium">Teléfono</label>
-                                            <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <label class="form-label small fw-medium">Dirección</label>
-                                            <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -208,6 +263,23 @@
 </div>
     </ContentTemplate>
 </asp:UpdatePanel>
+
+<script type="text/javascript">
+    // Script para mostrar/ocultar contraseña
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnTogglePassword = document.getElementById('btnTogglePassword');
+        const txtPassword = document.getElementById('<%= txtPassword.ClientID %>');
+        
+        if (btnTogglePassword && txtPassword) {
+            btnTogglePassword.addEventListener('click', function() {
+                const type = txtPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                txtPassword.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+        }
+    });
+</script>
+
 <style>
     /* Estilos consistentes */
     body
