@@ -57,7 +57,7 @@
     <Content Include="AsistenciaProfe.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
     <Content Include="bin\proyectoPracticaProfecional.pdb" />
-    <Content Include="buscaralumnoprofe.aspx" />
+    <Content Include="buscaralumnonv.aspx" />
     <Content Include="Calendario.aspx" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\bootstrap\mixins\_border-radius.css" />
@@ -123,12 +123,12 @@
     <Compile Include="AsistenciaProfe.aspx.designer.cs">
       <DependentUpon>AsistenciaProfe.aspx</DependentUpon>
     </Compile>
-    <Compile Include="buscaralumnoprofe.aspx.cs">
-      <DependentUpon>buscaralumnoprofe.aspx</DependentUpon>
+    <Compile Include="buscaralumnonv.aspx.cs">
+      <DependentUpon>buscaralumnonv.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="buscaralumnoprofe.aspx.designer.cs">
-      <DependentUpon>buscaralumnoprofe.aspx</DependentUpon>
+    <Compile Include="buscaralumnonv.aspx.designer.cs">
+      <DependentUpon>buscaralumnonv.aspx</DependentUpon>
     </Compile>
     <Compile Include="Calendario.aspx.cs">
       <DependentUpon>Calendario.aspx</DependentUpon>

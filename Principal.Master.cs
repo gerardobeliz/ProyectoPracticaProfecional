@@ -58,9 +58,14 @@ namespace proyectoPracticaProfecional
                     Url = "AsistenciaProfe.aspx", 
                     Icono = "fa-sticky-note" 
                 },
+                //new MenuItem { 
+                //    Nombre = "Buscar alumno ", 
+                //    Url = "buscaralumnoprofe.aspx", 
+                //    Icono = "fa-sticky-note" 
+                //},
                 new MenuItem { 
-                    Nombre = "Buscar alumno ", 
-                    Url = "buscaralumnoprofe.aspx", 
+                    Nombre = "Buscar alumno", 
+                    Url = "buscaralumnonv.aspx", 
                     Icono = "fa-sticky-note" 
                 },
                 new MenuItem { 
