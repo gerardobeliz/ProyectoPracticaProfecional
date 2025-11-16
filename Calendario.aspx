@@ -9,7 +9,7 @@
                 <div class="row justify-content-center">
                     <div class="col-md-10 col-lg-8">
                         <div class="text-center mb-4">
-                            <h2>Calendario de Días No Laborables</h2>
+                            <h2>Calendario de Días Laborables</h2>
                         </div>
                         
                         <!-- Selector de Año -->

@@ -13,18 +13,18 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-image: linear-gradient(to bottom, #f8f9fa, #e9ecef);
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    background-image: linear-gradient(to bottom right, #a0c8ff, #0a192f);
+    color: #333;
+    line-height: 1.6;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
         
         .container {
             max-width: 800px;

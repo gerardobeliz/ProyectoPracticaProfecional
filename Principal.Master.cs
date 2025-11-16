@@ -68,11 +68,17 @@ namespace proyectoPracticaProfecional
                     Url = "buscaralumnonv.aspx", 
                     Icono = "fa-sticky-note" 
                 },
+                
                 new MenuItem { 
                     Nombre = "Calendario", 
                     Url = "Calendario.aspx", 
                     Icono = "fa-calendar" 
                 },
+                 new MenuItem { 
+                        Nombre = "SALIR", 
+                        Url = "salir.aspx", 
+                        Icono = "fa-logaut" 
+                    },
               };
                 CrearMenu(menuprofesor);
             }//cierre if profesor
@@ -100,7 +106,12 @@ namespace proyectoPracticaProfecional
                         Url = "Calendario.aspx", 
                         Icono = "fa-calendar" 
                     },
-                      
+                    new MenuItem { 
+                        Nombre = "SALIR", 
+                        Url = "salir.aspx", 
+                        Icono = "fa-logaut" 
+                    },
+                         
               };
                 CrearMenu(menuprece);
             }//cierre if preceptor
@@ -123,6 +134,11 @@ namespace proyectoPracticaProfecional
                         Nombre = "Eliminar Personal", 
                         Url = "EliminarEmpleado.aspx", 
                         Icono = "fa-trash"  
+                    },
+                     new MenuItem { 
+                        Nombre = "SALIR", 
+                        Url = "salir.aspx", 
+                        Icono = "fa-logaut" 
                     },
               };
                 CrearMenu(menudirectivo);
