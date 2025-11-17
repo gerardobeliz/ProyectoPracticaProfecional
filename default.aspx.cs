@@ -113,7 +113,7 @@ namespace Instituto46
         {
             using (SqlConnection conexion = new SqlConnection(Cadena))
             {
-                string script = String.Format("SELECT ID_PERSONAL, NOMBRE, PASS, TIPO FROM PERSONAL WHERE NOMBRE = '{0}' AND PASS = '{1}'", txtUsuario.Text, txtPassword.Text);
+                string script = String.Format("SELECT ID_PERSONAL, USUARIO, PASS, TIPO FROM PERSONAL WHERE NOMBRE = '{0}' AND PASS = '{1}'", txtUsuario.Text, txtPassword.Text);
 
                 conexion.Open();
                 SqlCommand command = new SqlCommand(script, conexion);
