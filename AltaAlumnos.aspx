@@ -5,6 +5,7 @@
     <asp:ScriptManager ID="ScriptManager1" runat="server" />
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
+
             <div class="container py-4">
                 <!-- Header Minimalista -->
                 <div class="text-center mb-5">
