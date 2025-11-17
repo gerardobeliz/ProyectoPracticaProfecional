@@ -53,7 +53,7 @@
      <div class="contenedor">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h2>Buscar Alumno</h2>
-        <asp:Button ID="btnVolver" runat="server" Text="Volver" CssClass="btn" OnClientClick="history.back(); return false;" />
+        <asp:Button ID="btnVolver" runat="server" Text="Volver" CssClass="btn" OnClientClick="history.back(); return false;" /> 
     </div>
 
     <asp:TextBox ID="txtBuscar" runat="server" placeholder="Legajo, nombre o apellido"></asp:TextBox>
@@ -62,7 +62,7 @@
         <h3>Notas del Alumno</h3>
         <asp:GridView ID="gvAlumno" runat="server" AutoGenerateColumns="False" CssClass="tabla-notas" Visible="False">
             <Columns>
-                <asp:BoundField DataField="LEGAJO" HeaderText="Legajo" ReadOnly="True" />
+                <asp:BoundField DataField="LEGAJO" HeaderText="legajo" ReadOnly="True" />
                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" ReadOnly="True" />
                 <asp:BoundField DataField="APELLIDO" HeaderText="Apellido" ReadOnly="True" />
 

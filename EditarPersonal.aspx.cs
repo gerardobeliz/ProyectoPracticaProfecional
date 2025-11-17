@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
-using System.Web.Security;
 
 namespace proyectoPracticaProfecional
 {
@@ -14,348 +13,208 @@ namespace proyectoPracticaProfecional
         {
             if (!IsPostBack)
             {
-                LimpiarInterfaz();
-                OcultarMensajes();
+                pnlResultados.Visible = false;
+                pnlEdicion.Visible = false;
+                pnlMensaje.Visible = false;
+            }
+
+            // Manejar el postback desde JavaScript
+            if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"].StartsWith("SeleccionarEmpleado:"))
+            {
+                string idPersonal = Request["__EVENTARGUMENT"].Replace("SeleccionarEmpleado:", "");
+                CargarEmpleado(idPersonal);
             }
         }
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            string criterioBusqueda = txtBuscarEmpleado.Text.Trim();
+            string criterio = txtBuscarEmpleado.Text.Trim();
 
-            if (string.IsNullOrEmpty(criterioBusqueda))
+            if (string.IsNullOrEmpty(criterio))
             {
-                MostrarMensajeError("Por favor, ingrese un criterio de búsqueda.");
+                MostrarMensaje("Por favor, ingrese un criterio de búsqueda.");
                 return;
             }
 
-            BuscarEmpleados(criterioBusqueda);
-        }
-
-        private void BuscarEmpleados(string criterio)
-        {
             try
             {
-                using (SqlConnection connection = new SqlConnection(Cadena))
+                using (SqlConnection con = new SqlConnection(Cadena))
                 {
-                    string query = @"
-                    SELECT ID_PERSONAL, DNI, nombre, apellido, TIPO
-                    FROM PERSONAL
-                    WHERE (nombre LIKE @criterio OR apellido LIKE @criterio OR CONVERT(VARCHAR, DNI) LIKE @criterio)
-                    ORDER BY apellido, nombre";
+                    string query = @"SELECT ID_PERSONAL, DNI, nombre, apellido, TIPO 
+                                   FROM PERSONAL 
+                                   WHERE nombre LIKE @criterio OR apellido LIKE @criterio OR DNI LIKE @criterio";
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        command.Parameters.AddWithValue("@criterio", "%" + criterio + "%");
+                        cmd.Parameters.AddWithValue("@criterio", "%" + criterio + "%");
+                        con.Open();
 
-                        connection.Open();
-                        SqlDataAdapter adapter = new SqlDataAdapter(command);
                         DataTable dt = new DataTable();
-                        adapter.Fill(dt);
+                        dt.Load(cmd.ExecuteReader());
 
                         if (dt.Rows.Count > 0)
                         {
                             gvEmpleados.DataSource = dt;
                             gvEmpleados.DataBind();
                             pnlResultados.Visible = true;
-                            OcultarMensajes();
+                            pnlMensaje.Visible = false;
                         }
                         else
                         {
                             pnlResultados.Visible = false;
-                            MostrarMensajeError("No se encontraron empleados con el criterio especificado.");
+                            MostrarMensaje("No se encontraron resultados.");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al buscar empleados: " + ex.Message);
+                MostrarMensaje("Error: " + ex.Message);
             }
         }
 
         protected void gvEmpleados_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Método tradicional por si acaso
             if (gvEmpleados.SelectedRow != null)
             {
-                string idPersonal = gvEmpleados.DataKeys[gvEmpleados.SelectedIndex].Value.ToString();
-                CargarDatosEmpleadoParaEdicion(idPersonal);
+                string idPersonal = gvEmpleados.SelectedDataKey.Value.ToString();
+                CargarEmpleado(idPersonal);
             }
         }
 
-        private void CargarDatosEmpleadoParaEdicion(string idPersonal)
+        private void CargarEmpleado(string idPersonal)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(Cadena))
+                using (SqlConnection con = new SqlConnection(Cadena))
                 {
-                    // Consulta actualizada con todos los nuevos campos
-                    string query = @"
-                    SELECT ID_PERSONAL, DNI, nombre, apellido, TIPO, 
-                           fecha_nac, fecha_ingreso, direccion, cp, 
-                           tel, email,pass
-                    FROM PERSONAL 
-                    WHERE ID_PERSONAL = @idPersonal";
+                    string query = @"SELECT ID_PERSONAL, DNI, nombre, apellido, tipo, email,
+                                   fecha_nac, fecha_ingreso, direccion, cp, tel, pass
+                                   FROM PERSONAL WHERE ID_PERSONAL = @id";
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        command.Parameters.AddWithValue("@idPersonal", idPersonal);
+                        cmd.Parameters.AddWithValue("@id", idPersonal);
+                        con.Open();
 
-                        connection.Open();
-                        SqlDataReader reader = command.ExecuteReader();
-
-                        if (reader.Read())
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            ViewState["IDEmpleadoAEditar"] = reader["ID_PERSONAL"].ToString();
-
-                            // Mostrar información del empleado seleccionado
-                            string nombreCompleto = string.Format("{0}, {1}", reader["apellido"], reader["nombre"]);
-                            lblEmpleadoAEditar.Text = nombreCompleto;
-
-                            // Cargar datos en los controles del formulario
-                            txtLegajo.Text = reader["ID_PERSONAL"].ToString();
-                            txtDocumento.Text = reader["DNI"].ToString();
-                            txtNombre.Text = reader["nombre"].ToString();
-                            txtApellido.Text = reader["apellido"].ToString();
-
-                            // Nuevos campos
-                            if (reader["fecha_nac"] != DBNull.Value)
+                            if (reader.Read())
                             {
-                                txtFechaNacimiento.Text = Convert.ToDateTime(reader["fecha_nac"]).ToString("yyyy-MM-dd");
-                            }
+                                // Cargar datos básicos
+                                txtLegajo.Text = reader["ID_PERSONAL"].ToString();
+                                txtDocumento.Text = reader["DNI"].ToString();
+                                txtNombre.Text = reader["nombre"].ToString();
+                                txtApellido.Text = reader["apellido"].ToString();
+                                txtEmail.Text = reader["email"] != DBNull.Value ? reader["email"].ToString() : "";
 
-                            if (reader["fecha_ingreso"] != DBNull.Value)
+                                // Cargar fechas
+                                if (reader["fecha_nac"] != DBNull.Value)
+                                {
+                                    DateTime fechaNac = Convert.ToDateTime(reader["fecha_nac"]);
+                                    txtFechaNacimiento.Text = fechaNac.ToString("yyyy-MM-dd");
+                                }
+
+                                if (reader["fecha_ingreso"] != DBNull.Value)
+                                {
+                                    DateTime fechaIngreso = Convert.ToDateTime(reader["fecha_ingreso"]);
+                                    txtFechaIngreso.Text = fechaIngreso.ToString("yyyy-MM-dd");
+                                }
+
+                                // Cargar otros campos
+                                txtDireccion.Text = reader["direccion"] != DBNull.Value ? reader["direccion"].ToString() : "";
+                                txtCP.Text = reader["cp"] != DBNull.Value ? reader["cp"].ToString() : "";
+                                txtTelefono.Text = reader["tel"] != DBNull.Value ? reader["tel"].ToString() : "";
+
+                                // Cargar dropdown
+                                if (reader["tipo"] != DBNull.Value)
+                                {
+                                    ddlCargo.SelectedValue = reader["tipo"].ToString();
+                                }
+
+                                lblEmpleadoAEditar.Text = reader["apellido"].ToString() + ", " + reader["nombre"].ToString();
+                                pnlEdicion.Visible = true;
+                                MostrarMensaje("Empleado cargado: " + reader["nombre"].ToString() + " " + reader["apellido"].ToString());
+                            }
+                            else
                             {
-                                txtFechaIngreso.Text = Convert.ToDateTime(reader["fecha_ingreso"]).ToString("yyyy-MM-dd");
+                                MostrarMensaje("No se encontró el empleado.");
                             }
-
-                            txtDireccion.Text = reader["direccion"] != DBNull.Value ? reader["direccion"].ToString() : "";
-                            txtCP.Text = reader["cp"] != DBNull.Value ? reader["cp"].ToString() : "";
-                            txtTelefono.Text = reader["tel"] != DBNull.Value ? reader["tel"].ToString() : "";
-                            txtEmail.Text = reader["email"] != DBNull.Value ? reader["email"].ToString() : "";
-
-                            // Password - dejar en blanco por seguridad
-                            txtPassword.Text = "";
-
-                            // Cargar dropdowns
-                            if (reader["TIPO"] != DBNull.Value)
-                            {
-                                var itemTipo = ddlCargo.Items.FindByValue(reader["TIPO"].ToString());
-                                if (itemTipo != null)
-                                    itemTipo.Selected = true;
-                            }
-
-                            //if (reader["estado"] != DBNull.Value)
-                            //{
-                            //    var itemEstado = ddlEstado.Items.FindByValue(reader["estado"].ToString());
-                            //    if (itemEstado != null)
-                            //        itemEstado.Selected = true;
-                            //}
-
-                            pnlEdicion.Visible = true;
-                            OcultarMensajes();
                         }
-                        else
-                        {
-                            MostrarMensajeError("No se pudieron cargar los datos del empleado.");
-                        }
-                        reader.Close();
                     }
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al cargar datos del empleado: " + ex.Message);
+                MostrarMensaje("Error al cargar: " + ex.Message);
             }
         }
 
         protected void btnGuardarCambios_Click(object sender, EventArgs e)
         {
-            if (Page.IsValid)
-            {
-                ActualizarEmpleado();
-            }
-        }
-
-        private void ActualizarEmpleado()
-        {
-            string idEmpleado = ViewState["IDEmpleadoAEditar"] != null ?
-                ViewState["IDEmpleadoAEditar"].ToString() : "";
-
-            if (string.IsNullOrEmpty(idEmpleado))
-            {
-                MostrarMensajeError("No se ha seleccionado un empleado válido para editar.");
-                return;
-            }
-
             try
             {
-                using (SqlConnection connection = new SqlConnection(Cadena))
+                using (SqlConnection con = new SqlConnection(Cadena))
                 {
-                    // Query actualizada con todos los nuevos campos
-                    string updateQuery = @"
-                    UPDATE PERSONAL 
-                    SET nombre = @nombre,
-                        apellido = @apellido,
-                        TIPO = @tipo,
-                        DNI = @dni,
-                        fecha_nac = @fechaNacimiento,
-                        fecha_ingreso = @fechaIngreso,
-                        direccion = @direccion,
-                        cp= @codigoPostal,
-                        tel = @telefono,
-                        email = @email,
-//                        estado = @estado
-                        {0} -- Placeholder para actualización de contraseña
-                    WHERE ID_PERSONAL = @idEmpleado";
+                    string query = @"UPDATE PERSONAL SET 
+                                   nombre = @nombre, 
+                                   apellido = @apellido, 
+                                   tipo = @tipo,
+                                   DNI = @dni,
+                                   email = @email,
+                                   fecha_nac = @fecha_nac,
+                                   fecha_ingreso = @fecha_ingreso,
+                                   direccion = @direccion,
+                                   cp = @cp,
+                                   tel = @tel
+                                   WHERE ID_PERSONAL = @id";
 
-                    // Manejar la contraseña (solo actualizar si se proporciona una nueva)
-                    string passwordUpdate = "";
-                    SqlParameter passwordParam = null;
-
-                    if (!string.IsNullOrEmpty(txtPassword.Text.Trim()))
+                    using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        passwordUpdate = ", password = @password";
-                        string hashedPassword = FormsAuthentication.HashPasswordForStoringInConfigFile(txtPassword.Text.Trim(), "SHA1");
-                        passwordParam = new SqlParameter("@password", hashedPassword);
-                    }
+                        cmd.Parameters.AddWithValue("@id", txtLegajo.Text);
+                        cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
+                        cmd.Parameters.AddWithValue("@apellido", txtApellido.Text);
+                        cmd.Parameters.AddWithValue("@tipo", ddlCargo.SelectedValue);
+                        cmd.Parameters.AddWithValue("@dni", txtDocumento.Text);
+                        cmd.Parameters.AddWithValue("@email", txtEmail.Text);
+                        cmd.Parameters.AddWithValue("@fecha_nac", string.IsNullOrEmpty(txtFechaNacimiento.Text) ? (object)DBNull.Value : DateTime.Parse(txtFechaNacimiento.Text));
+                        cmd.Parameters.AddWithValue("@fecha_ingreso", string.IsNullOrEmpty(txtFechaIngreso.Text) ? (object)DBNull.Value : DateTime.Parse(txtFechaIngreso.Text));
+                        cmd.Parameters.AddWithValue("@direccion", string.IsNullOrEmpty(txtDireccion.Text) ? (object)DBNull.Value : txtDireccion.Text);
+                        cmd.Parameters.AddWithValue("@cp", string.IsNullOrEmpty(txtCP.Text) ? (object)DBNull.Value : txtCP.Text);
+                        cmd.Parameters.AddWithValue("@tel", string.IsNullOrEmpty(txtTelefono.Text) ? (object)DBNull.Value : txtTelefono.Text);
 
-                    updateQuery = string.Format(updateQuery, passwordUpdate);
+                        con.Open();
+                        int result = cmd.ExecuteNonQuery();
 
-                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@idEmpleado", idEmpleado);
-                        command.Parameters.AddWithValue("@nombre", txtNombre.Text.Trim());
-                        command.Parameters.AddWithValue("@apellido", txtApellido.Text.Trim());
-                        command.Parameters.AddWithValue("@tipo", ddlCargo.SelectedValue);
-                        command.Parameters.AddWithValue("@dni", txtDocumento.Text.Trim());
-                        //command.Parameters.AddWithValue("@estado", ddlEstado.SelectedValue);
-
-                        // Nuevos campos con manejo de valores nulos
-                        command.Parameters.AddWithValue("@fechaNacimiento",
-                            string.IsNullOrEmpty(txtFechaNacimiento.Text) ? (object)DBNull.Value : Convert.ToDateTime(txtFechaNacimiento.Text));
-
-                        command.Parameters.AddWithValue("@fechaIngreso",
-                            string.IsNullOrEmpty(txtFechaIngreso.Text) ? (object)DBNull.Value : Convert.ToDateTime(txtFechaIngreso.Text));
-
-                        command.Parameters.AddWithValue("@direccion",
-                            string.IsNullOrEmpty(txtDireccion.Text) ? (object)DBNull.Value : txtDireccion.Text.Trim());
-
-                        command.Parameters.AddWithValue("@codigoPostal",
-                            string.IsNullOrEmpty(txtCP.Text) ? (object)DBNull.Value : txtCP.Text.Trim());
-
-                        command.Parameters.AddWithValue("@telefono",
-                            string.IsNullOrEmpty(txtTelefono.Text) ? (object)DBNull.Value : txtTelefono.Text.Trim());
-
-                        command.Parameters.AddWithValue("@email",
-                            string.IsNullOrEmpty(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
-
-                        // Agregar parámetro de contraseña si es necesario
-                        if (passwordParam != null)
+                        if (result > 0)
                         {
-                            command.Parameters.Add(passwordParam);
-                        }
-
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            MostrarMensajeExito("Los datos del empleado se actualizaron correctamente.");
-                            LimpiarInterfaz();
+                            MostrarMensaje("Empleado actualizado correctamente.");
+                            pnlEdicion.Visible = false;
                         }
                         else
                         {
-                            MostrarMensajeError("No se pudieron actualizar los datos del empleado.");
+                            MostrarMensaje("No se pudo actualizar el empleado.");
                         }
                     }
-                }
-            }
-            catch (SqlException sqlEx)
-            {
-                if (sqlEx.Number == 2627) // Violación de unique key
-                {
-                    MostrarMensajeError("Error: El DNI o email ya existe en el sistema.");
-                }
-                else
-                {
-                    MostrarMensajeError("Error de base de datos al actualizar empleado: " + sqlEx.Message);
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al actualizar empleado: " + ex.Message);
+                MostrarMensaje("Error al guardar: " + ex.Message);
             }
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            LimpiarInterfaz();
-        }
-
-        private void LimpiarInterfaz()
-        {
-            txtBuscarEmpleado.Text = string.Empty;
-            pnlResultados.Visible = false;
             pnlEdicion.Visible = false;
-            ViewState["IDEmpleadoAEditar"] = null;
-
-            // Limpiar todos los controles del formulario
-            txtLegajo.Text = string.Empty;
-            txtDocumento.Text = string.Empty;
-            txtNombre.Text = string.Empty;
-            txtApellido.Text = string.Empty;
-            txtFechaNacimiento.Text = string.Empty;
-            txtFechaIngreso.Text = string.Empty;
-            txtDireccion.Text = string.Empty;
-            txtCP.Text = string.Empty;
-            txtTelefono.Text = string.Empty;
-            txtEmail.Text = string.Empty;
-            txtPassword.Text = string.Empty;
-
-            // Resetear dropdowns
-
-            ddlCargo.SelectedIndex = 0;
-            //ddlEstado.SelectedIndex = 0;
-
-            OcultarMensajes();
+            pnlMensaje.Visible = false;
         }
 
-        private void MostrarMensajeExito(string mensaje)
+        private void MostrarMensaje(string mensaje)
         {
-            lblSuccessMessage.Text = mensaje;
-            pnlSuccessMessage.Visible = true;
-            pnlErrorMessage.Visible = false;
-        }
-
-        private void MostrarMensajeError(string mensaje)
-        {
-            lblErrorMessage.Text = mensaje;
-            pnlErrorMessage.Visible = true;
-            pnlSuccessMessage.Visible = false;
-        }
-
-        private void OcultarMensajes()
-        {
-            pnlSuccessMessage.Visible = false;
-            pnlErrorMessage.Visible = false;
-        }
-
-        // Método adicional para validaciones personalizadas si es necesario
-        protected void ValidarFechas(object source, System.Web.UI.WebControls.ServerValidateEventArgs args)
-        {
-            // Ejemplo de validación personalizada para fechas
-            if (!string.IsNullOrEmpty(txtFechaNacimiento.Text) && !string.IsNullOrEmpty(txtFechaIngreso.Text))
-            {
-                DateTime fechaNacimiento = Convert.ToDateTime(txtFechaNacimiento.Text);
-                DateTime fechaIngreso = Convert.ToDateTime(txtFechaIngreso.Text);
-
-                if (fechaNacimiento >= fechaIngreso)
-                {
-                    args.IsValid = false;
-                    // Puedes mostrar un mensaje de error adicional aquí
-                }
-            }
+            lblMensaje.Text = mensaje;
+            pnlMensaje.Visible = true;
         }
     }
 }

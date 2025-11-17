@@ -18,3 +18,8 @@ C:\Users\gerar\Downloads\11-20251104T220625Z-1-001\proyecto-tercero 4-11\bin\pro
 C:\Users\gerar\Downloads\11-20251104T220625Z-1-001\proyecto-tercero 4-11\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
 C:\Users\gerar\Downloads\11-20251104T220625Z-1-001\proyecto-tercero 4-11\obj\Debug\proyectoPracticaProfecional.dll
 C:\Users\gerar\Downloads\11-20251104T220625Z-1-001\proyecto-tercero 4-11\obj\Debug\proyectoPracticaProfecional.pdb
+C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\bin\proyectoPracticaProfecional.dll
+C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\bin\proyectoPracticaProfecional.pdb
+C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
+C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.dll
+C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.pdb
