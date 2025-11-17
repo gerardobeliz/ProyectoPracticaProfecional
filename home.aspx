@@ -16,7 +16,7 @@ Sabemos que todo cambio puede generar expectativas, por eso les aseguramos que h
 
 Así que exploren, disfruten y saquen el máximo provecho de todo lo que hemos preparado para ustedes. ¡El futuro comienza hoy, y estamos increíblemente felices de que nos acompañen en este viaje!
 
-</br></br>¡Muchas gracias!</p>
+</br>¡Muchas gracias!</p>
        
     </div>
     </asp:Content>

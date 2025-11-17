@@ -37,24 +37,9 @@
                                                     <asp:ListItem Value="profesor" Text="Profesor" />
                                                     <asp:ListItem Value="preceptor" Text="Preceptor" />
                                                     <asp:ListItem Value="directivo" Text="Directivo" />
-                                                    </asp:DropDownList>
+                                                 </asp:DropDownList>
                                                 <asp:RequiredFieldValidator ID="rfvTipoPersonal" runat="server" ControlToValidate="ddlTipoPersonal"
                                                     InitialValue="" ErrorMessage="Requerido" Display="Dynamic" CssClass="text-danger small"></asp:RequiredFieldValidator>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Nuevo DropDownList para Carreras -->
-                                        <div class="row">
-                                            <div class="col-12 mb-3">
-                                                <label for="ddlCarrera" class="form-label required-field small fw-medium">
-                                                    Carrera</label>
-                                                <asp:DropDownList ID="ddlCarrera" runat="server" CssClass="form-select form-select-sm" 
-                                                    DataTextField="Curso" DataValueField="Curso" required="true">
-                                                    <asp:ListItem Value="" Text="Seleccione carrera" Selected="True" />
-                                                   
-                                                </asp:DropDownList>
-                                                <asp:RequiredFieldValidator ID="rfvCarrera" runat="server" ControlToValidate="ddlCarrera"
-                                                    InitialValue="" ErrorMessage="Seleccione una carrera" Display="Dynamic" CssClass="text-danger small"></asp:RequiredFieldValidator>
                                             </div>
                                         </div>
                                     </div>
@@ -202,21 +187,6 @@
                                             <i class="fas fa-lock me-2"></i>Seguridad
                                         </h6>
                                         <div class="row">
-                                            <!-- Nuevo campo: Usuario -->
-                                            <div class="col-12 mb-3">
-                                                <label for="txtUsuario" class="form-label required-field small fw-medium">
-                                                    Nombre de Usuario</label>
-                                                <asp:TextBox ID="txtUsuario" runat="server" CssClass="form-control form-control-sm" 
-                                                    placeholder="Ej: juan.perez" required="true" MaxLength="50"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario"
-                                                    ErrorMessage="Requerido" Display="Dynamic" CssClass="text-danger small"></asp:RequiredFieldValidator>
-                                                <asp:CustomValidator ID="cvUsuario" runat="server" ControlToValidate="txtUsuario"
-                                                    OnServerValidate="cvUsuario_ServerValidate" 
-                                                    Display="Dynamic" CssClass="text-danger small" ErrorMessage="El usuario ya existe">
-                                                </asp:CustomValidator>
-                                            </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-12 mb-3">
                                                 <label for="txtPassword" class="form-label required-field small fw-medium">
                                                     Contraseña</label>
@@ -285,7 +255,6 @@
                     <div class="student-details mt-4">
                         <p><strong>Nombre:</strong> <span id="confirmNombre" runat="server"></span></p>
                         <p><strong>Tipo:</strong> <span id="confirmTipo" runat="server"></span></p>
-                        <p><strong>Carrera:</strong> <span id="confirmCarrera" runat="server"></span></p>
                         <p><strong>Email:</strong> <span id="confirmEmail" runat="server"></span></p>
                         <p><strong>Fecha Ingreso:</strong> <span id="confirmFechaIngreso" runat="server"></span></p>
                     </div>
@@ -484,10 +453,9 @@
     </style>
 
     <script type="text/javascript">
-        function showConfirmation(nombre, tipo, carrera, email, fechaIngreso) {
+        function showConfirmation(nombre, tipo, email, fechaIngreso) {
             document.getElementById('<%= confirmNombre.ClientID %>').innerText = nombre;
             document.getElementById('<%= confirmTipo.ClientID %>').innerText = tipo;
-            document.getElementById('<%= confirmCarrera.ClientID %>').innerText = carrera;
             document.getElementById('<%= confirmEmail.ClientID %>').innerText = email;
             document.getElementById('<%= confirmFechaIngreso.ClientID %>').innerText = fechaIngreso;
             document.getElementById('confirmationModal').style.display = 'flex';

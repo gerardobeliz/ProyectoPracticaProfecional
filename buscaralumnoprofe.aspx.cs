@@ -266,10 +266,7 @@ namespace proyectoPracticaProfecional
                 return v;
             return 0;
         }
-        protected void btnVolver_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("home.aspx");
-        }
+
         private string ObtenerCursoProfesor()
         {
             if (Session["id_curso"] != null)
@@ -292,4 +289,3 @@ namespace proyectoPracticaProfecional
         }
     }
 }
-        

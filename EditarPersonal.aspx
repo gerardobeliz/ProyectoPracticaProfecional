@@ -29,7 +29,7 @@
                             </h6>
                             <div class="row align-items-end justify-content-center">
                                 <div class="col-md-8 mb-3">
-                                    <label class="form-label small fw-medium text-center w-100">
+                                    <label for="txtBuscarEmpleado" class="form-label small fw-medium text-center w-100">
                                         Buscar por nombre, apellido o DNI</label>
                                     <asp:TextBox ID="txtBuscarEmpleado" runat="server" CssClass="form-control text-center" 
                                         placeholder="Ingrese nombre, apellido o DNI"></asp:TextBox>
@@ -37,28 +37,22 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="d-flex justify-content-center">
                                         <asp:Button ID="btnBuscar" runat="server" Text="Buscar" 
-                                            CssClass="btn btn-primary px-4" OnClick="btnBuscar_Click" />
+                                            CssClass="btn btn-primary px-4"
+                                            OnClick="btnBuscar_Click" />
                                     </div>
                                 </div>
                             </div>
-                            
                             <!-- Grid de resultados -->
                             <asp:Panel ID="pnlResultados" runat="server" Visible="false" CssClass="mt-3">
                                 <div class="table-responsive">
                                     <asp:GridView ID="gvEmpleados" runat="server" CssClass="table table-hover table-sm"
-                                        AutoGenerateColumns="False" DataKeyNames="ID_PERSONAL" 
-                                        OnSelectedIndexChanged="gvEmpleados_SelectedIndexChanged"
+                                        AutoGenerateColumns="False" DataKeyNames="ID_PERSONAL" OnSelectedIndexChanged="gvEmpleados_SelectedIndexChanged"
                                         GridLines="None" BorderStyle="None">
                                         <Columns>
-                                            <asp:TemplateField>
-                                                <ItemTemplate>
-                                                    <asp:Button ID="btnSeleccionar" runat="server" 
-                                                        CommandName="Select" 
-                                                        Text="Seleccionar" 
-                                                        CssClass="btn btn-outline-primary btn-sm"
-                                                        OnClientClick='<%# "seleccionarEmpleado(\"" + Eval("ID_PERSONAL") + "\"); return false;" %>' />
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                            <asp:CommandField ShowSelectButton="True" ButtonType="Button" SelectText="Seleccionar" 
+                                                ControlStyle-CssClass="btn btn-outline-primary btn-sm">
+                                                <ControlStyle CssClass="btn btn-outline-primary btn-sm" />
+                                            </asp:CommandField>
                                             <asp:BoundField DataField="ID_PERSONAL" HeaderText="ID" 
                                                 HeaderStyle-CssClass="small fw-bold" ItemStyle-CssClass="small" />
                                             <asp:BoundField DataField="DNI" HeaderText="DNI" 
@@ -87,7 +81,19 @@
                                 <div class="text-center mb-4">
                                     <i class="fas fa-user-edit text-primary fa-3x mb-3"></i>
                                     <h5 class="text-primary fw-bold">Editar Información del Empleado</h5>
-                                    <asp:Label ID="lblEmpleadoAEditar" runat="server" CssClass="text-muted"></asp:Label>
+                                </div>
+                                
+                                <!-- Información del empleado -->
+                                <div class="alert alert-info mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <div>
+                                            <strong>Editando información de:</strong>
+                                            <div class="mt-2">
+                                                <asp:Label ID="lblEmpleadoAEditar" runat="server" CssClass="fw-bold"></asp:Label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Formulario de edición -->
@@ -116,9 +122,11 @@
                                             <label class="form-label small fw-medium">Tipo/Cargo *</label>
                                             <asp:DropDownList ID="ddlCargo" runat="server" CssClass="form-select">
                                                 <asp:ListItem Text="Seleccione un cargo" Value=""></asp:ListItem>
-                                                <asp:ListItem Text="directivo" Value="directivo"></asp:ListItem>
-                                                <asp:ListItem Text="preceptor" Value="preceptor"></asp:ListItem>
-                                                <asp:ListItem Text="profesor" Value="profesor"></asp:ListItem>
+                                                <asp:ListItem Text="Administrativo" Value="Administrativo"></asp:ListItem>
+                                                <asp:ListItem Text="Técnico" Value="Técnico"></asp:ListItem>
+                                                <asp:ListItem Text="Operario" Value="Operario"></asp:ListItem>
+                                                <asp:ListItem Text="Supervisor" Value="Supervisor"></asp:ListItem>
+                                                <asp:ListItem Text="Gerente" Value="Gerente"></asp:ListItem>
                                             </asp:DropDownList>
                                             <asp:RequiredFieldValidator ID="rfvCargo" runat="server" 
                                                 ControlToValidate="ddlCargo" ErrorMessage="El cargo es obligatorio" 
@@ -197,16 +205,26 @@
                                             <div class="input-group">
                                                 <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" 
                                                     TextMode="Password" placeholder="Dejar en blanco para no modificar"></asp:TextBox>
-                                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                                <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>
                                             <small class="text-muted">Mínimo 6 caracteres. Dejar en blanco para mantener la contraseña actual.</small>
-                                            <asp:CustomValidator ID="cvPassword" runat="server" 
-                                                ControlToValidate="txtPassword"
-                                                ClientValidationFunction="validatePassword"
-                                                ErrorMessage="La contraseña debe tener al menos 6 caracteres"
-                                                CssClass="text-danger small" Display="Dynamic"></asp:CustomValidator>
+                                            <asp:RegularExpressionValidator ID="revPassword" runat="server"
+                                                ControlToValidate="txtPassword" ErrorMessage="La contraseña debe tener al menos 6 caracteres"
+                                                ValidationExpression="^.{6,}$" CssClass="text-danger small" Display="Dynamic"></asp:RegularExpressionValidator>
+                                        </div>
+
+                                        <!-- Estado -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label small fw-medium">Estado</label>
+                                            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
+                                                <asp:ListItem Text="Activo" Value="Activo"></asp:ListItem>
+                                                <asp:ListItem Text="Inactivo" Value="Inactivo"></asp:ListItem>
+                                                <asp:ListItem Text="Vacaciones" Value="Vacaciones"></asp:ListItem>
+                                                <asp:ListItem Text="Licencia" Value="Licencia"></asp:ListItem>
+                                                <asp:ListItem Text="Suspendido" Value="Suspendido"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </div>
                                     </div>
                                 </div>
@@ -216,7 +234,8 @@
                                     <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-outline-secondary px-4 py-2"
                                         OnClick="btnCancelar_Click" CausesValidation="false" />
                                     <asp:Button ID="btnGuardarCambios" runat="server" Text="Guardar Cambios" 
-                                        CssClass="btn btn-success px-4 py-2" OnClick="btnGuardarCambios_Click" />
+                                        CssClass="btn btn-success px-4 py-2"
+                                        OnClick="btnGuardarCambios_Click" />
                                 </div>
                             </div>
                         </div>
@@ -225,72 +244,57 @@
             </div>
 
             <!-- Mensajes -->
-            <asp:Panel ID="pnlMensaje" runat="server" CssClass="alert alert-info mt-4 py-3" Visible="false" role="alert">
+            <asp:Panel ID="pnlSuccessMessage" runat="server" CssClass="alert alert-success mt-4 py-3"
+                Visible="false" role="alert">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-info-circle me-3"></i>
-                    <asp:Label ID="lblMensaje" runat="server" Text=""></asp:Label>
+                    <i class="fas fa-check-circle me-3"></i>
+                    <asp:Label ID="lblSuccessMessage" runat="server" Text=""></asp:Label>
+                </div>
+            </asp:Panel>
+            <asp:Panel ID="pnlErrorMessage" runat="server" CssClass="alert alert-danger mt-4 py-3"
+                Visible="false" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle me-3"></i>
+                    <asp:Label ID="lblErrorMessage" runat="server" Text=""></asp:Label>
                 </div>
             </asp:Panel>
         </div>
     </div>
 </div>
-
     </ContentTemplate>
 </asp:UpdatePanel>
 
 <script type="text/javascript">
-    function seleccionarEmpleado(idPersonal) {
-        __doPostBack('', 'SeleccionarEmpleado:' + idPersonal);
-    }
-
-    function togglePassword() {
-        var txtPassword = document.getElementById('<%= txtPassword.ClientID %>');
-        var icon = event.target.querySelector('i') || event.target;
-
-        if (txtPassword.type === 'password') {
-            txtPassword.type = 'text';
-            icon.className = 'fas fa-eye-slash';
-        } else {
-            txtPassword.type = 'password';
-            icon.className = 'fas fa-eye';
-        }
-    }
-
-    function validatePassword(source, args) {
-        var password = document.getElementById('<%= txtPassword.ClientID %>').value;
-
-        // Si está vacío, es válido (no se quiere cambiar la contraseña)
-        if (password === '') {
-            args.IsValid = true;
-            return;
-        }
-
-        // Si tiene contenido, debe tener al menos 6 caracteres
-        args.IsValid = password.length >= 6;
-    }
-
-    // Manejar el postback desde JavaScript
-    var prm = Sys.WebForms.PageRequestManager.getInstance();
-    prm.add_beginRequest(function (sender, args) {
-        var postbackElement = args.get_postBackElement();
-        if (postbackElement && postbackElement.id && postbackElement.id.indexOf('seleccionarEmpleado') !== -1) {
-            // Mostrar loading si es necesario
+    // Script para mostrar/ocultar contraseña
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnTogglePassword = document.getElementById('btnTogglePassword');
+        const txtPassword = document.getElementById('<%= txtPassword.ClientID %>');
+        
+        if (btnTogglePassword && txtPassword) {
+            btnTogglePassword.addEventListener('click', function() {
+                const type = txtPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                txtPassword.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
         }
     });
 </script>
 
 <style>
     /* Estilos consistentes */
-    body {
+    body
+    {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        font-family: 'Inter' , 'Segoe UI' , system-ui, -apple-system, sans-serif;
     }
     
-    .text-blue {
+    .text-blue
+    {
         color: #2c5aa0 !important;
     }
     
-    .header-icon {
+    .header-icon
+    {
         width: 80px;
         height: 80px;
         margin: 0 auto;
@@ -303,16 +307,19 @@
         font-size: 2rem;
     }
     
-    .card {
+    .card
+    {
         border: 1px solid #e2e8f0;
         background: #ffffff;
     }
     
-    .card.border-primary {
+    .card.border-primary
+    {
         border: 2px solid #2c5aa0;
     }
     
-    .form-control, .form-select {
+    .form-control, .form-select
+    {
         border: 1px solid #d1d5db;
         border-radius: 8px;
         padding: 0.75rem 1rem;
@@ -321,19 +328,22 @@
         background: #ffffff;
     }
     
-    .form-control:focus, .form-select:focus {
+    .form-control:focus, .form-select:focus
+    {
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         outline: none;
     }
     
-    .section-title {
+    .section-title
+    {
         color: #2c5aa0;
         letter-spacing: 0.5px;
         font-size: 0.9rem;
     }
     
-    .btn-primary {
+    .btn-primary
+    {
         background: linear-gradient(135deg, #2c5aa0 0%, #3b82f6 100%);
         border: none;
         border-radius: 8px;
@@ -343,12 +353,14 @@
         transition: all 0.2s ease;
     }
     
-    .btn-primary:hover {
+    .btn-primary:hover
+    {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
     }
     
-    .btn-outline-secondary {
+    .btn-outline-secondary
+    {
         border: 2px solid #d1d5db;
         border-radius: 8px;
         font-weight: 500;
@@ -358,13 +370,15 @@
         transition: all 0.2s ease;
     }
     
-    .btn-outline-secondary:hover {
+    .btn-outline-secondary:hover
+    {
         border-color: #3b82f6;
         background-color: #f8fafc;
         color: #3b82f6;
     }
     
-    .btn-success {
+    .btn-success
+    {
         background: linear-gradient(135deg, #198754 0%, #0d6a4a 100%);
         border: none;
         border-radius: 8px;
@@ -374,21 +388,25 @@
         transition: all 0.2s ease;
     }
     
-    .btn-success:hover {
+    .btn-success:hover
+    {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(25, 135, 84, 0.3);
     }
     
-    .table-hover tbody tr:hover {
+    .table-hover tbody tr:hover
+    {
         background-color: #f8fafc;
     }
     
-    .table-primary {
+    .table-primary
+    {
         background: linear-gradient(135deg, #2c5aa0 0%, #3b82f6 100%);
         color: white;
     }
     
-    .alert {
+    .alert
+    {
         border: none;
         border-radius: 8px;
         border-left: 4px solid;
@@ -396,7 +414,27 @@
         font-size: 0.9rem;
     }
     
-    .alert-info {
+    .alert-success
+    {
+        border-left-color: #10b981;
+        color: #065f46;
+    }
+    
+    .alert-danger
+    {
+        border-left-color: #ef4444;
+        color: #7f1d1d;
+    }
+    
+    .alert-warning
+    {
+        border-left-color: #f59e0b;
+        background-color: #fffbeb;
+        color: #92400e;
+    }
+    
+    .alert-info
+    {
         border-left-color: #3b82f6;
         background-color: #f0f7ff;
         color: #1e40af;

@@ -72,164 +72,44 @@ namespace proyectoPracticaProfecional
 
             args.IsValid = true;
         }
-        public int ObtenerUltimoLegajo()
-        {
-            int ultimoLegajo = 0;
-            string query = "SELECT MAX(legajo) AS ultimo_legajo FROM alumnos";
-
-            using (SqlConnection conn = new SqlConnection(Cadena))
-            {
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    conn.Open();
-                    var result = cmd.ExecuteScalar();
-                    if (result != null && result != DBNull.Value)
-                    {
-                        ultimoLegajo = Convert.ToInt32(result);
-                    }
-                }
-            }
-            return ultimoLegajo;
-        }
-        //---------------------
-       
- // Método para obtener el último legajo insertado en carrera_profe
-private int ObtenerUltimoLegajoCarreraProfe()
-{
-    try
-    {
-        using (SqlConnection conexion = new SqlConnection(Cadena))
-        {
-            string query = "SELECT TOP 1 legajo FROM carrera_profe ORDER BY legajo DESC";
-            
-            conexion.Open();
-            SqlCommand command = new SqlCommand(query, conexion);
-            var result = command.ExecuteScalar();
-            
-            if (result != null && result != DBNull.Value)
-            {
-                return Convert.ToInt32(result);
-            }
-            return 0; // o -1 si no hay registros
-        }
-    }
-    catch (Exception ex)
-    {
-        // Manejar el error
-        return 0;
-    }
-}
-
-// O si quieres obtener más información del último registro:
-private void ObtenerUltimoRegistroCarreraProfe()
-{
-    try
-    {
-        using (SqlConnection conexion = new SqlConnection(Cadena))
-        {
-            string query = "SELECT TOP 1 legajo, carrera_nom FROM carrera_profe ORDER BY legajo DESC";
-
-            conexion.Open();
-            SqlCommand command = new SqlCommand(query, conexion);
-            SqlDataReader reader = command.ExecuteReader();
-
-            if (reader.Read())
-            {
-                int legajo = reader.GetInt32(0);
-                string carrera = reader.GetString(1);
-
-                // Usar los valores como necesites - CORREGIDO
-                Console.WriteLine("Último legajo: " + legajo + ", Carrera: " + carrera);
-
-                // O también puedes usar string.Format:
-                // Console.WriteLine(string.Format("Último legajo: {0}, Carrera: {1}", legajo, carrera));
-            }
-            reader.Close();
-        }
-    }
-    catch (Exception ex)
-    {
-        // Manejar el error
-        Console.WriteLine("Error al obtener último registro: " + ex.Message);
-    }
-}
-
-        //---------------------el boton guardar funciona ok---------------------------------------------
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            // PRIMERO valida la página
             Page.Validate();
 
-            if (Page.IsValid)
+            if (Page.IsValid)  // <-- CAMBIA de "Page.IsValid" a validar explícitamente
             {
                 try
                 {
-                    int legajoGenerado = 0;
-
-                    // PRIMERO: Insertar en ALUMNOS
-                    using (SqlConnection conexion = new SqlConnection(Cadena))
-                    {
-                        conexion.Open();
-
-                        int numTel = 0;
-                        if (!string.IsNullOrEmpty(txtTelefono.Text))
-                        {
-                            int.TryParse(txtTelefono.Text, out numTel);
-                        }
-
-                        string insertAlumno = @"INSERT INTO ALUMNOS 
-                    (dni, fecha_nac, fecha_ingreso, nombre, apellido, direccion,cp, telefono, genero, carrera, email) 
-                    VALUES (@dni, @fecha_nac, GETDATE(), @nombre, @apellido, @direccion,1754, @telefono, @genero, @carrera, @email);
-                    SELECT SCOPE_IDENTITY();";
-
-                        using (SqlCommand cmd = new SqlCommand(insertAlumno, conexion))
-                        {
-                            cmd.Parameters.AddWithValue("@dni", txtDocumento.Text);
-                            cmd.Parameters.AddWithValue("@fecha_nac", txtFechaNacimiento.Text);
-                            cmd.Parameters.AddWithValue("@nombre", txtNombre.Text);
-                            cmd.Parameters.AddWithValue("@apellido", txtApellido.Text);
-                            cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text);
-                            cmd.Parameters.AddWithValue("@telefono", numTel);
-                            cmd.Parameters.AddWithValue("@genero", ddlGenero.Text);
-                            cmd.Parameters.AddWithValue("@carrera", ddlCurso.Text);
-                            cmd.Parameters.AddWithValue("@email", txtEmail.Text);
-
-                            legajoGenerado = Convert.ToInt32(cmd.ExecuteScalar());
-                        }
-                    }
-
-                    // SEGUNDO: Insertar en CURSOS
                     using (SqlConnection conexion = new SqlConnection(Cadena))
                     {
                         
+                        int numTel;
+                        numTel = int.Parse(txtTelefono.Text);
+                        string script = String.Format("INSERT INTO ALUMNOS VALUES ({0}, '{1}', GETDATE(), '{2}', '{3}', '{4}', {5}, {6}, '{7}', '{8}', '{9}')",
+                            txtDocumento.Text,txtFechaNacimiento.Text,txtNombre.Text,txtApellido.Text,txtDireccion.Text,1754,numTel,ddlGenero.Text ,ddlCurso.Text,txtEmail.Text);
+
                         conexion.Open();
-                        
-                        string insertCurso = "INSERT INTO CURSOS (legajo, curso, id_personal) VALUES (@legajo, @curso, @idPersonal)";
+                        SqlCommand command = new SqlCommand(script, conexion);
+                        SqlDataReader reader = command.ExecuteReader();
+                        reader.Close();
+                        conexion.Close();
 
-                        using (SqlCommand cmd = new SqlCommand(insertCurso, conexion))
-                        {
-                            
-                            cmd.Parameters.AddWithValue("@legajo", legajoGenerado);
-                            cmd.Parameters.AddWithValue("@curso", ddlCurso.Text);
-                            cmd.Parameters.AddWithValue("@idPersonal", ObtenerUltimoLegajoCarreraProfe());
-
-                            cmd.ExecuteNonQuery();
-                        }
+                        pnlSuccessMessage.Visible = true;
+                        pnlErrorMessage.Visible = false;
                     }
 
-                    pnlSuccessMessage.Visible = true;
-                    pnlErrorMessage.Visible = false;
                     LimpiarFormulario();
                 }
                 catch (Exception ex)
                 {
                     pnlSuccessMessage.Visible = false;
                     pnlErrorMessage.Visible = true;
-                    lblError.Text = "Error al guardar: " + ex.Message;
+                    lblError.Text = ex.Message;
                 }
             }
         }
 
-       
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarFormulario();

@@ -25,8 +25,6 @@ namespace proyectoPracticaProfecional
                 gvAsistencia.Visible = false;
                 pnlMensaje.Visible = false;
                 pnlFechaSeleccionada.Visible = false;
-                pnlBotonesAccion.Visible = false;
-                pnlResumen.Visible = false;
             }
             else
             {
@@ -48,7 +46,7 @@ namespace proyectoPracticaProfecional
                 using (SqlConnection conexion = new SqlConnection(Cadena))
                 {
                     conexion.Open();
-                    string query = "SELECT DISTINCT curso FROM CURSOS ORDER BY curso";
+                    string query = "SELECT DISTINCT curso FROM CURSOS";
                     using (SqlCommand cmd = new SqlCommand(query, conexion))
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -94,26 +92,14 @@ namespace proyectoPracticaProfecional
                 // Cargar alumnos del curso
                 CargarAlumnosDelCurso();
 
-                if (Alumnos.Count == 0)
-                {
-                    MostrarMensaje("No se encontraron alumnos para el curso seleccionado", "warning");
-                    pnlEmpty.Visible = true;
-                    gvAsistencia.Visible = false;
-                    pnlBotonesAccion.Visible = false;
-                    pnlResumen.Visible = false;
-                    return;
-                }
-
                 // Generar la tabla de asistencia
                 GenerarGridAsistencia();
 
-                // Mostrar controles
+                // Mostrar panel de tabla
                 pnlEmpty.Visible = false;
                 gvAsistencia.Visible = true;
-                pnlBotonesAccion.Visible = true;
-                pnlResumen.Visible = true;
 
-                MostrarMensaje("Asistencia cargada para " + Alumnos.Count.ToString() + " alumnos del curso " + ddlCurso.SelectedItem.Text, "success");
+                MostrarMensaje("Asistencia cargada para " + Alumnos.Count.ToString() + " alumnos", "info");
             }
             catch (Exception ex)
             {
@@ -166,11 +152,14 @@ namespace proyectoPracticaProfecional
             }
 
             Session["Alumnos"] = Alumnos;
+
+            if (Alumnos.Count == 0)
+                MostrarMensaje("No se encontraron alumnos para el curso seleccionado", "warning");
         }
 
         private void GenerarGridAsistencia()
         {
-            if (FechaSeleccionada == null || Alumnos == null || Alumnos.Count == 0)
+            if (FechaSeleccionada == null || Alumnos == null)
                 return;
 
             // Crear DataTable para el GridView
@@ -187,7 +176,7 @@ namespace proyectoPracticaProfecional
                 DataRow row = dt.NewRow();
                 row["Id"] = alumno.Legajo;
                 row["NombreCompleto"] = alumno.NombreCompleto;
-                row["EstadoAsistencia"] = estadoExistente;
+                row["EstadoAsistencia"] = estadoExistente; // CORREGIDO: estadoExistente en lugar de estadoExistencia
                 dt.Rows.Add(row);
             }
 
@@ -208,32 +197,19 @@ namespace proyectoPracticaProfecional
 
                 if (ddlEstadoAsistencia != null)
                 {
-                    // Configurar el valor seleccionado desde el DataItem
+                    // Configurar el valor seleccionado
                     DataRowView rowView = (DataRowView)e.Row.DataItem;
                     string estadoActual = rowView["EstadoAsistencia"].ToString();
 
                     if (!string.IsNullOrEmpty(estadoActual))
                     {
                         ddlEstadoAsistencia.SelectedValue = estadoActual;
-
-                        // Aplicar estilo inmediatamente via JavaScript
-                        ScriptManager.RegisterStartupScript(this, GetType(),
-                            "estilo_" + e.Row.RowIndex.ToString(),
-                            "setTimeout(function() { aplicarEstiloDropdown(document.getElementById('" + ddlEstadoAsistencia.ClientID + "')); }, 100);",
-                            true);
                     }
 
                     // Agregar evento JavaScript
-                    ddlEstadoAsistencia.Attributes["onchange"] = "aplicarEstiloDropdown(this); actualizarResumen();";
+                    ddlEstadoAsistencia.Attributes["onchange"] = "aplicarEstiloDropdown(this)";
                 }
             }
-        }
-
-        protected void gvAsistencia_DataBound(object sender, EventArgs e)
-        {
-            // Asegurar que los dropdowns muestren el estilo correcto después del databind
-            ScriptManager.RegisterStartupScript(this, GetType(), "inicializarDropdowns",
-                "setTimeout(function() { inicializarDropdowns(); actualizarResumen(); }, 200);", true);
         }
 
         private string ObtenerEstadoAsistencia(int legajo, DateTime fecha)
@@ -243,7 +219,7 @@ namespace proyectoPracticaProfecional
                 using (SqlConnection conexion = new SqlConnection(Cadena))
                 {
                     conexion.Open();
-                    string query = "SELECT PRESENTE FROM ASISTENCIA WHERE LEGAJO = @Legajo AND FECHA = @Fecha";
+                    string query = "SELECT PRESENTE FROM ASISTENCIA WHERE LEGAJO = '@Legajo' AND FECHA = '@Fecha'";
 
                     using (SqlCommand cmd = new SqlCommand(query, conexion))
                     {
@@ -251,30 +227,21 @@ namespace proyectoPracticaProfecional
                         cmd.Parameters.AddWithValue("@Fecha", fecha.Date);
 
                         object resultado = cmd.ExecuteScalar();
-                        if (resultado != null && resultado != DBNull.Value)
+                        if (resultado != null)
                         {
-                            int estadoBD = Convert.ToInt32(resultado);
-
-                            // Mapear INT de BD a STRING para el dropdown
-                            switch (estadoBD)
-                            {
-                                case 1: return "P"; // Presente
-                                case 0: return "A"; // Ausente
-                                case 2: return "J"; // Justificado
-                                default: return ""; // Valor desconocido
-                            }
+                            int presente = Convert.ToInt32(resultado);
+                            return presente == 1 ? "P" : "A";
                         }
                         else
                         {
-                            return ""; // No existe registro
+                            return ""; // Valor por defecto vacío
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine("Error al obtener asistencia - Legajo: " + legajo.ToString() + ", Fecha: " + fecha.ToString("yyyy-MM-dd") + ", Error: " + ex.Message);
-                return "";
+                return ""; // En caso de error, retornar vacío
             }
         }
 
@@ -303,7 +270,6 @@ namespace proyectoPracticaProfecional
 
                 int registrosGuardados = 0;
                 int registrosConError = 0;
-                List<string> errores = new List<string>();
 
                 // Recorrer el GridView para obtener los valores
                 foreach (GridViewRow row in gvAsistencia.Rows)
@@ -319,16 +285,12 @@ namespace proyectoPracticaProfecional
                             string estado = ddlEstadoAsistencia.SelectedValue;
                             Alumno alumno = Alumnos.Find(a => a.Legajo == legajo);
 
-                            // Solo guardar si se seleccionó un estado
                             if (alumno != null && !string.IsNullOrEmpty(estado))
                             {
                                 if (GuardarAsistenciaBD(alumno.Legajo, alumno.Id_Curso, FechaSeleccionada.Value, estado))
                                     registrosGuardados++;
                                 else
-                                {
                                     registrosConError++;
-                                    errores.Add("Alumno: " + alumno.NombreCompleto);
-                                }
                             }
                         }
                     }
@@ -337,18 +299,15 @@ namespace proyectoPracticaProfecional
                 // Mostrar mensaje según resultados
                 if (registrosGuardados > 0)
                 {
-                    string mensaje = "✅ Asistencia guardada correctamente. " + registrosGuardados.ToString() + " registros actualizados.";
+                    string mensaje = "Asistencia guardada correctamente. " + registrosGuardados.ToString() + " registros actualizados.";
                     if (registrosConError > 0)
-                        mensaje += " ❌ " + registrosConError.ToString() + " registros con errores.";
+                        mensaje += " " + registrosConError.ToString() + " registros con errores.";
 
                     MostrarMensaje(mensaje, "success");
-
-                    // Recargar los datos para mostrar los valores guardados
-                    GenerarGridAsistencia();
                 }
                 else
                 {
-                    MostrarMensaje("No se guardó ninguna asistencia. Verifique que haya seleccionado estados.", "warning");
+                    MostrarMensaje("No se guardó ninguna asistencia.", "warning");
                 }
             }
             catch (Exception ex)
@@ -357,7 +316,7 @@ namespace proyectoPracticaProfecional
             }
         }
 
-        private bool GuardarAsistenciaBD(int legajo, int id_Curso, DateTime fecha, string estado)
+        private bool GuardarAsistenciaBD(int legajo, int Id_Curso, DateTime fecha, string estado)
         {
             try
             {
@@ -393,58 +352,42 @@ namespace proyectoPracticaProfecional
                         using (SqlCommand cmd = new SqlCommand(query, conexion))
                         {
                             cmd.Parameters.AddWithValue("@Legajo", legajo);
-                            cmd.Parameters.AddWithValue("@IdCurso", id_Curso);
+                            cmd.Parameters.AddWithValue("@IdCurso", Id_Curso);
                             cmd.Parameters.AddWithValue("@Fecha", fecha.Date);
 
-                            // Convertir estado STRING a INT para la base de datos
-                            int estadoBD = 0; // Por defecto ausente
-                            switch (estado)
-                            {
-                                case "P": estadoBD = 1; break; // Presente
-                                case "A": estadoBD = 0; break; // Ausente
-                                case "J": estadoBD = 2; break; // Justificado
-                                default: estadoBD = 0; break; // Por defecto ausente
-                            }
+                            // Convertir estado a valor booleano para la base de datos
+                            int presente = (estado == "P") ? 1 : 0;
+                            cmd.Parameters.AddWithValue("@Presente", presente);
 
-                            cmd.Parameters.AddWithValue("@Presente", estadoBD);
-
-                            int result = cmd.ExecuteNonQuery();
-                            System.Diagnostics.Debug.WriteLine("Guardado - Legajo: " + legajo.ToString() + ", Estado: " + estado + "->" + estadoBD.ToString() + ", Filas: " + result.ToString());
-                            return result > 0;
+                            return cmd.ExecuteNonQuery() > 0;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Error BD al guardar asistencia - Legajo: " + legajo.ToString() + ", Error: " + ex.Message);
+                // Log del error (en producción usar un logger)
+                System.Diagnostics.Debug.WriteLine("Error BD: " + ex.Message);
                 return false;
             }
         }
 
         private void ActualizarContadoresResumen()
         {
-            if (Alumnos == null || Alumnos.Count == 0 || FechaSeleccionada == null) return;
+            if (FechaSeleccionada == null) return;
 
             int presentes = 0;
             int ausentes = 0;
             int justificados = 0;
 
-            // Contar desde los datos actuales del GridView (no de la BD)
-            foreach (GridViewRow row in gvAsistencia.Rows)
+            foreach (Alumno alumno in Alumnos)
             {
-                if (row.RowType == DataControlRowType.DataRow)
+                string estado = ObtenerEstadoAsistencia(alumno.Legajo, FechaSeleccionada.Value);
+                switch (estado)
                 {
-                    DropDownList ddlEstadoAsistencia = (DropDownList)row.FindControl("ddlEstadoAsistencia");
-                    if (ddlEstadoAsistencia != null)
-                    {
-                        switch (ddlEstadoAsistencia.SelectedValue)
-                        {
-                            case "P": presentes++; break;
-                            case "A": ausentes++; break;
-                            case "J": justificados++; break;
-                        }
-                    }
+                    case "P": presentes++; break;
+                    case "A": ausentes++; break;
+                    case "J": justificados++; break;
                 }
             }
 
@@ -462,16 +405,14 @@ namespace proyectoPracticaProfecional
             {
                 case "success":
                 case "ok":
+                case "info":
                     pnlMensaje.CssClass = "mensaje-exito";
                     break;
                 case "error":
                     pnlMensaje.CssClass = "mensaje-error";
                     break;
                 case "warning":
-                    pnlMensaje.CssClass = "mensaje-error"; // Usar mismo estilo para warning
-                    break;
-                case "info":
-                    pnlMensaje.CssClass = "mensaje-info";
+                    pnlMensaje.CssClass = "mensaje-error";
                     break;
                 default:
                     pnlMensaje.CssClass = "mensaje-exito";
@@ -480,62 +421,31 @@ namespace proyectoPracticaProfecional
 
             // Ocultar mensaje después de 5 segundos
             ScriptManager.RegisterStartupScript(this, GetType(), "hideMessage",
-                "setTimeout(function() { var panel = document.getElementById('" + pnlMensaje.ClientID + "'); if(panel) panel.style.display = 'none'; }, 5000);", true);
+                "setTimeout(function() { document.getElementById('" + pnlMensaje.ClientID + "').style.display = 'none'; }, 5000);", true);
+        }
+
+        protected void ddlCurso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Lógica opcional para recargar automáticamente
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            // Limpiar sesiones
-            Session.Remove("Alumnos");
-            Session.Remove("FechaSeleccionada");
-
-            // Recargar página
+            // Limpiar y recargar
             Response.Redirect(Request.Url.AbsoluteUri);
         }
 
         protected void btnExcel_Click(object sender, EventArgs e)
         {
-            try
+            if (Alumnos == null || Alumnos.Count == 0)
             {
-                if (Alumnos == null || Alumnos.Count == 0)
-                {
-                    MostrarMensaje("No hay datos para exportar", "warning");
-                    return;
-                }
-
-                // Aquí iría la lógica de exportación a Excel
-                // Por ahora mostramos un mensaje
-                MostrarMensaje("La funcionalidad de exportación a Excel está en desarrollo", "info");
-
-                // TODO: Implementar exportación a Excel
-                // ExportarAsistenciaExcel();
+                MostrarMensaje("No hay datos para exportar", "warning");
+                return;
             }
-            catch (Exception ex)
-            {
-                MostrarMensaje("Error al exportar a Excel: " + ex.Message, "error");
-            }
+
+            MostrarMensaje("Funcionalidad de exportación a Excel - En desarrollo", "info");
         }
 
-        // Método para debug (opcional)
-        private void DebugAsistencia()
-        {
-            System.Diagnostics.Debug.WriteLine("=== DEBUG ASISTENCIA ===");
-            System.Diagnostics.Debug.WriteLine("Alumnos count: " + (Alumnos != null ? Alumnos.Count.ToString() : "0"));
-            System.Diagnostics.Debug.WriteLine("Fecha: " + FechaSeleccionada.ToString());
-            System.Diagnostics.Debug.WriteLine("Curso: " + ddlCurso.SelectedValue);
-
-            if (Alumnos != null && FechaSeleccionada != null)
-            {
-                foreach (var alumno in Alumnos)
-                {
-                    string estado = ObtenerEstadoAsistencia(alumno.Legajo, FechaSeleccionada.Value);
-                    System.Diagnostics.Debug.WriteLine("Alumno: " + alumno.NombreCompleto + ", Legajo: " + alumno.Legajo.ToString() + ", Estado BD: " + estado);
-                }
-            }
-            System.Diagnostics.Debug.WriteLine("=== FIN DEBUG ===");
-        }
-
-        // Clase Alumno
         public class Alumno
         {
             public int Legajo { get; set; }
@@ -543,19 +453,6 @@ namespace proyectoPracticaProfecional
             public string Apellido { get; set; }
             public int Id_Curso { get; set; }
             public string NombreCompleto { get; set; }
-        }
-
-        // Método para limpiar controles (opcional)
-        private void LimpiarControles()
-        {
-            pnlEmpty.Visible = true;
-            gvAsistencia.Visible = false;
-            pnlMensaje.Visible = false;
-            pnlFechaSeleccionada.Visible = false;
-            pnlBotonesAccion.Visible = false;
-            pnlResumen.Visible = false;
-            Alumnos = new List<Alumno>();
-            FechaSeleccionada = null;
         }
     }
 }
