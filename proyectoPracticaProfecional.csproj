@@ -53,6 +53,7 @@
   <ItemGroup>
     <Content Include="AltaAlumnos.aspx" />
     <Content Include="AltaPersonal.aspx" />
+    <Content Include="AlumnoInfo.aspx" />
     <Content Include="Asistencia.aspx" />
     <Content Include="AsistenciaProfe.aspx" />
     <Content Include="bin\proyectoPracticaProfecional.dll" />
@@ -93,6 +94,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="AlumnoNotas.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AltaAlumnos.aspx.cs">
@@ -108,6 +110,13 @@
     </Compile>
     <Compile Include="AltaPersonal.aspx.designer.cs">
       <DependentUpon>AltaPersonal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AlumnoInfo.aspx.cs">
+      <DependentUpon>AlumnoInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AlumnoInfo.aspx.designer.cs">
+      <DependentUpon>AlumnoInfo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Asistencia.aspx.cs">
       <DependentUpon>Asistencia.aspx</DependentUpon>
@@ -205,6 +214,13 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidarLongitudUsuario.cs" />
+    <Compile Include="AlumnoNotas.aspx.cs">
+      <DependentUpon>AlumnoNotas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AlumnoNotas.aspx.designer.cs">
+      <DependentUpon>AlumnoNotas.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".DS_Store" />
@@ -307,7 +323,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>61655</DevelopmentServerPort>
+          <DevelopmentServerPort>60748</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

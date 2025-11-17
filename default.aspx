@@ -141,12 +141,12 @@
         .auth-container {
             background: white;
             border-radius: 16px;
-            width: 350px;
+            width: 400px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             position: relative;
             padding: 2rem;
             box-sizing: border-box;
-            min-height: 400px;
+            min-height: 450px;
             display: flex;
             flex-direction: column;
         }
@@ -184,7 +184,7 @@
         .auth-container h1 {
             font-size: 1.5rem;
             color: #1e293b;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
             font-weight: 600;
         }
@@ -254,6 +254,22 @@
         .recover-link:hover {
             text-decoration: underline;
         }
+
+        /* Estilo para el texto informativo de alumnos */
+        .info-alumno {
+            background-color: #f0f8ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: #2563eb;
+            border-left: 4px solid #2563eb;
+            line-height: 1.4;
+        }
+
+        .info-alumno strong {
+            color: #1e40af;
+        }
     </style>
 </head>
 <body>
@@ -285,14 +301,24 @@
                 <div class="auth-forms">
                     <div class="login-form" id="loginForm">
                         <h1>Inicia sesión</h1>
+                        
+                        <!-- Texto informativo para alumnos -->
+                        <div class="info-alumno">
+                            <strong>Para alumnos:</strong><br />
+                            Usuario: Tu DNI<br />
+                            Contraseña: Tu apellido
+                        </div>
+                        
                         <div>
-                            <!-- Cambio principal: TextMode="SingleLine" en lugar de "Email" -->
-                            <asp:TextBox ID="txtUsuario" runat="server" TextMode="SingleLine" placeholder="Nombre de usuario" required="required" CssClass="form-control"></asp:TextBox>
-                            <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" placeholder="Contraseña" required="required" CssClass="form-control"></asp:TextBox>
+                            <asp:TextBox ID="txtUsuario" runat="server" TextMode="SingleLine" placeholder="Usuario o DNI" required="required" CssClass="form-control"></asp:TextBox>
+                            <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" placeholder="Contraseña o apellido" required="required" CssClass="form-control"></asp:TextBox>
                             <asp:Button ID="btnLogin" runat="server" Text="Continuar" CssClass="btn btn-primary" OnClick="btnLogin_Click" />
-                            <%--<asp:HyperLink ID="lnkRecover" runat="server" NavigateUrl="~/RecoverPassword.aspx" CssClass="recover-link">¿Olvidaste tu contraseña?</asp:HyperLink>--%>
                         </div>
                     </div>
+                </div>
+
+                <div class="footer">
+                    Instituto de Formación Docente y Técnica N° 46
                 </div>
             </div>
         </div>

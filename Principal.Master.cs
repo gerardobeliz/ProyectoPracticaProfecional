@@ -24,7 +24,7 @@ namespace proyectoPracticaProfecional
                 if (lbl != null)
                     lbl.Text = Session["tipo"].ToString();
             }//hasta aca la etiqueta para el tipo
-            
+
             if (Session["Usuario"] != null)
             {
                 Label lbl = (Label)FindControl("lblNombreUsuario");
@@ -58,11 +58,6 @@ namespace proyectoPracticaProfecional
                     Url = "AsistenciaProfe.aspx", 
                     Icono = "fa-sticky-note" 
                 },
-                //new MenuItem { 
-                //    Nombre = "Buscar alumno ", 
-                //    Url = "buscaralumnoprofe.aspx", 
-                //    Icono = "fa-sticky-note" 
-                //},
                 new MenuItem { 
                     Nombre = "Buscar alumno", 
                     Url = "buscaralumnonv.aspx", 
@@ -76,7 +71,7 @@ namespace proyectoPracticaProfecional
               };
                 CrearMenu(menuprofesor);
             }//cierre if profesor
-            
+
             if (tipo == "preceptor")
             {
                 var menuprece = new List<MenuItem> {  
@@ -104,7 +99,7 @@ namespace proyectoPracticaProfecional
               };
                 CrearMenu(menuprece);
             }//cierre if preceptor
-         
+
             if (tipo == "directivo")
             {
                 var menudirectivo = new List<MenuItem> {  
@@ -127,6 +122,29 @@ namespace proyectoPracticaProfecional
               };
                 CrearMenu(menudirectivo);
             }//cierre if directivo
+
+            // ✅ NUEVO: Menú para alumnos
+            if (tipo == "alumno")
+            {
+                var menualumno = new List<MenuItem> {  
+                    new MenuItem { 
+                        Nombre = "Mis Notas", 
+                        Url = "AlumnoNotas.aspx", 
+                        Icono = "fa-graduation-cap" 
+                    },
+                    new MenuItem { 
+                        Nombre = "Mi Información", 
+                        Url = "AlumnoInfo.aspx", 
+                        Icono = "fa-user" 
+                    },
+                    new MenuItem { 
+                        Nombre = "Calendario", 
+                        Url = "Calendario.aspx", 
+                        Icono = "fa-calendar" 
+                    },
+                };
+                CrearMenu(menualumno);
+            }//cierre if alumno
 
         }//cierra el metodo 
 
@@ -159,5 +177,3 @@ namespace proyectoPracticaProfecional
         }
     }
 }
-
-
