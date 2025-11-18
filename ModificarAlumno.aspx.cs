@@ -153,8 +153,6 @@ namespace proyectoPracticaProfecional
             try
             {
                 EliminarAlumno();
-                MostrarMensajeExito("Alumno eliminado correctamente.");
-                LimpiarFormulario();
             }
             catch (Exception ex)
             {
@@ -199,14 +197,90 @@ namespace proyectoPracticaProfecional
         {
             string legajo = lblIDAlumno.Text;
 
+            // Validar que tenemos un legajo válido
+            if (string.IsNullOrEmpty(legajo))
+            {
+                MostrarMensajeError("No se ha seleccionado un alumno para eliminar.");
+                return;
+            }
+
             using (SqlConnection conexion = new SqlConnection(Cadena))
             {
-                string query = "DELETE FROM Alumnos WHERE legajo = @legajo";
-                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                conexion.Open();
+                using (SqlTransaction transaction = conexion.BeginTransaction())
                 {
-                    cmd.Parameters.AddWithValue("@legajo", legajo);
-                    conexion.Open();
-                    cmd.ExecuteNonQuery();
+                    try
+                    {
+                        // Opcional: Verificar si existe el alumno antes de eliminar
+                        string checkAlumnoQuery = "SELECT COUNT(*) FROM Alumnos WHERE legajo = @legajo";
+                        using (SqlCommand checkCmd = new SqlCommand(checkAlumnoQuery, conexion, transaction))
+                        {
+                            checkCmd.Parameters.AddWithValue("@legajo", legajo);
+                            int existeAlumno = (int)checkCmd.ExecuteScalar();
+
+                            if (existeAlumno == 0)
+                            {
+                                transaction.Rollback();
+                                MostrarMensajeError("El alumno no existe en la base de datos.");
+                                return;
+                            }
+                        }
+
+                        // 1. Eliminar registros en CURSOS primero
+                        string deleteCursosQuery = "DELETE FROM CURSOS WHERE LEGAJO = @legajo";
+                        using (SqlCommand cmdCursos = new SqlCommand(deleteCursosQuery, conexion, transaction))
+                        {
+                            cmdCursos.Parameters.AddWithValue("@legajo", legajo);
+                            int cursosEliminados = cmdCursos.ExecuteNonQuery();
+                            // Usando string.Format en lugar de interpolación con $
+                            System.Diagnostics.Debug.WriteLine(string.Format("Se eliminaron {0} cursos del alumno {1}", cursosEliminados, legajo));
+                        }
+
+                        // 2. Eliminar el alumno
+                        string deleteAlumnoQuery = "DELETE FROM Alumnos WHERE legajo = @legajo";
+                        using (SqlCommand cmdAlumno = new SqlCommand(deleteAlumnoQuery, conexion, transaction))
+                        {
+                            cmdAlumno.Parameters.AddWithValue("@legajo", legajo);
+                            int resultado = cmdAlumno.ExecuteNonQuery();
+
+                            if (resultado > 0)
+                            {
+                                transaction.Commit();
+                                MostrarMensajeExito("Alumno eliminado correctamente junto con sus cursos asociados.");
+
+                                // Actualizar la interfaz
+                                LimpiarFormulario();
+                                if (!string.IsNullOrEmpty(txtBuscarAlumno.Text))
+                                {
+                                    btnBuscar_Click(null, null); // Recargar resultados
+                                }
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                MostrarMensajeError("No se pudo eliminar el alumno.");
+                            }
+                        }
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        transaction.Rollback();
+
+                        // Manejar errores específicos de SQL
+                        if (sqlEx.Number == 547) // Error de integridad referencial
+                        {
+                            MostrarMensajeError("No se puede eliminar el alumno porque tiene registros asociados en otras tablas.");
+                        }
+                        else
+                        {
+                            MostrarMensajeError("Error de base de datos: " + sqlEx.Message);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        MostrarMensajeError("Error al eliminar el alumno: " + ex.Message);
+                    }
                 }
             }
         }

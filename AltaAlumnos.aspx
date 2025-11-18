@@ -190,22 +190,6 @@
                 </asp:Panel>
             </div>
 
-            <!-- Modal de confirmación -->
-            <div class="confirmation-modal" id="confirmationModal" style="display: none;">
-                <div class="confirmation-content">
-                    <div class="confirmation-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>¡Alumno registrado con éxito!</h3>
-                    <p>Los datos del alumno han sido guardados correctamente en el sistema.</p>
-                    <div class="student-details mt-4">
-                        <p><strong>Nombre:</strong> <span id="confirmNombre" runat="server"></span></p>
-                        <p><strong>Email:</strong> <span id="confirmEmail" runat="server"></span></p>
-                        <p><strong>Carrera:</strong> <span id="confirmCarrera" runat="server"></span></p>
-                    </div>
-                    <button class="btn btn-primary mt-4" onclick="closeConfirmation()">Aceptar</button>
-                </div>
-            </div>
         </ContentTemplate>
     </asp:UpdatePanel>
 
@@ -332,7 +316,8 @@
             display: block;
         }
         
-        .confirmation-modal {
+        /* Estilos para el modal de confirmación */
+        .modal-alert {
             position: fixed;
             top: 0;
             left: 0;
@@ -345,7 +330,7 @@
             align-items: center;
         }
         
-        .confirmation-content {
+        .modal-alert-content {
             background: white;
             padding: 2rem;
             border-radius: 12px;
@@ -353,12 +338,24 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
         }
         
-        .confirmation-icon {
+        .modal-alert-icon {
             font-size: 4rem;
             color: #10b981;
             margin-bottom: 1rem;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Estilos para el diseño horizontal */
@@ -398,15 +395,42 @@
     </style>
 
     <script type="text/javascript">
-        function showConfirmation(nombre, email, carrera) {
-            document.getElementById('confirmNombre').textContent = nombre;
-            document.getElementById('confirmEmail').textContent = email;
-            document.getElementById('confirmCarrera').textContent = carrera;
-            document.getElementById('confirmationModal').style.display = 'flex';
+        function mostrarModalConfirmacion(nombreCompleto, email, carrera, legajo) {
+            // Crear el modal dinámicamente
+            var modalHTML = `
+                <div id="modalConfirmacion" class="modal-alert" style="display: flex;">
+                    <div class="modal-alert-content">
+                        <div class="modal-alert-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>¡Alumno ingresado exitosamente!</h3>
+                        <p>Los datos del alumno han sido guardados correctamente en el sistema.</p>
+                        <div class="student-details mt-4">
+                            <p><strong>Nombre:</strong> <span id="confirmNombre">${nombreCompleto}</span></p>
+                            <p><strong>Email:</strong> <span id="confirmEmail">${email}</span></p>
+                            <p><strong>Carrera:</strong> <span id="confirmCarrera">${carrera}</span></p>
+                            <p><strong>Legajo:</strong> <span id="confirmLegajo">${legajo}</span></p>
+                        </div>
+                        <button class="btn btn-primary mt-4" onclick="cerrarConfirmacion()">Aceptar</button>
+                    </div>
+                </div>
+            `;
+            
+            // Eliminar modal existente si hay
+            var modalExistente = document.getElementById('modalConfirmacion');
+            if (modalExistente) {
+                modalExistente.remove();
+            }
+            
+            // Agregar nuevo modal
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
 
-        function closeConfirmation() {
-            document.getElementById('confirmationModal').style.display = 'none';
+        function cerrarConfirmacion() {
+            var modal = document.getElementById('modalConfirmacion');
+            if (modal) {
+                modal.remove();
+            }
         }
 
         // Validación de solo números

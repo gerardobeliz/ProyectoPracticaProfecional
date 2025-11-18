@@ -239,7 +239,7 @@
                                             OnClick="btnActualizar_Click" />
                                         <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CssClass="btn btn-danger px-3 py-2"
                                             OnClick="btnEliminar_Click" CausesValidation="false" 
-                                            OnClientClick="return confirm('¿Está seguro de eliminar este alumno?');" />
+                                            OnClientClick="return confirmarEliminacion();" />
                                     </div>
                                 </div>
                             </div>
@@ -266,6 +266,20 @@
         </div>
     </div>
 </div>
+
+<!-- Script para confirmación de eliminación -->
+<script type="text/javascript">
+    function confirmarEliminacion() {
+        var alumnoSeleccionado = document.getElementById('<%= lblAlumnoSeleccionado.ClientID %>');
+        var nombreAlumno = alumnoSeleccionado ? alumnoSeleccionado.innerText : 'este alumno';
+
+        var mensaje = "¿Está seguro que desea eliminar a " + nombreAlumno + "?\n\n" +
+                     "⚠️ ADVERTENCIA: Esta acción también eliminará todos los cursos asociados al alumno y no se puede deshacer.";
+
+        return confirm(mensaje);
+    }
+</script>
+
     </ContentTemplate>
 </asp:UpdatePanel>
 <style>
