@@ -23,3 +23,8 @@ C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\bin\pr
 C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
 C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.dll
 C:\Users\gerar\Downloads\11-20251117T224100Z-1-001\proyecto-tercero 16-11\obj\Debug\proyectoPracticaProfecional.pdb
+C:\Users\gerar\OneDrive\Desktop\bakup por si se rompe\proyectoPracticaProfecional\bin\proyectoPracticaProfecional.dll
+C:\Users\gerar\OneDrive\Desktop\bakup por si se rompe\proyectoPracticaProfecional\bin\proyectoPracticaProfecional.pdb
+C:\Users\gerar\OneDrive\Desktop\bakup por si se rompe\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
+C:\Users\gerar\OneDrive\Desktop\bakup por si se rompe\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.dll
+C:\Users\gerar\OneDrive\Desktop\bakup por si se rompe\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.pdb

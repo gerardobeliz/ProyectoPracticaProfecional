@@ -204,21 +204,15 @@
                                             <i class="fas fa-graduation-cap me-2"></i>Información Académica
                                         </h6>
                                         <div class="row">
+                                            <!-- TextBox para Carrera (No editable) -->
                                             <div class="col-md-6 mb-3">
-                                                <label for="ddlCarrera" class="form-label required-field small fw-medium">
+                                                <label for="txtCarrera" class="form-label required-field small fw-medium">
                                                     Carrera</label>
-                                                <asp:DropDownList ID="ddlCarrera" runat="server" CssClass="form-select" 
-                                                    required="true">
-                                                    <asp:ListItem Value="" Text="Seleccione Carrera" Selected="True" />
-                                                    <asp:ListItem Value="programacion" Text="Programación" />
-                                                    <asp:ListItem Value="hoteleria" Text="Hoteleria" />
-                                                    <asp:ListItem Value="educacion primaria" Text="Educación Primaria" />
-                                                    <asp:ListItem Value="biologia" Text="Biología" />
-                                                    <asp:ListItem Value="historia" Text="Historia" />
-                                                    <asp:ListItem Value="psicopedagogia" Text="Psicopedagogía" />
-                                                </asp:DropDownList>
-                                                <asp:RequiredFieldValidator ID="rfvCarrera" runat="server" ControlToValidate="ddlCarrera"
-                                                    InitialValue="" ErrorMessage="Requerido" Display="Dynamic" CssClass="text-danger small"></asp:RequiredFieldValidator>
+                                                <asp:TextBox ID="txtCarrera" runat="server" CssClass="form-control" 
+                                                    ReadOnly="true" BackColor="#f8f9fa" required="true"
+                                                    placeholder="Carrera del alumno"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="rfvCarrera" runat="server" ControlToValidate="txtCarrera"
+                                                    ErrorMessage="Requerido" Display="Dynamic" CssClass="text-danger small"></asp:RequiredFieldValidator>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="txtFechaInscripcion" class="form-label required-field small fw-medium">
@@ -274,7 +268,8 @@
         var nombreAlumno = alumnoSeleccionado ? alumnoSeleccionado.innerText : 'este alumno';
 
         var mensaje = "¿Está seguro que desea eliminar a " + nombreAlumno + "?\n\n" +
-                     "⚠️ ADVERTENCIA: Esta acción también eliminará todos los cursos asociados al alumno y no se puede deshacer.";
+                     "⚠️ ADVERTENCIA: Esta acción también eliminará TODOS los cursos asociados al alumno.\n\n" +
+                     "Esta operación NO se puede deshacer.";
 
         return confirm(mensaje);
     }
@@ -330,6 +325,15 @@
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         outline: none;
+    }
+    
+    /* Estilo específico para campos de solo lectura */
+    .form-control[readonly]
+    {
+        background-color: #f8f9fa !important;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+        color: #4b5563;
     }
     
     .section-title

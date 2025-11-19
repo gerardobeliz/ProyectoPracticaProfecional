@@ -1,5 +1,0 @@
-C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\bin\proyectoPracticaProfecional.dll
-C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\bin\proyectoPracticaProfecional.pdb
-C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.dll
-C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.pdb
-C:\Users\gerar\OneDrive\Documentos\Visual Studio 2010\Projects\proyectoPracticaProfecional\proyectoPracticaProfecional\obj\Debug\proyectoPracticaProfecional.csprojResolveAssemblyReference.cache
