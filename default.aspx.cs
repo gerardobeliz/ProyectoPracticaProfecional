@@ -19,6 +19,13 @@ namespace Instituto46
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Esto tiene que estar en todos los load de cada pagina para verificar que la session es valida
+            // Verificar primero si la sesión existe y no es nula
+            if (Session["Usuario"] == null || string.IsNullOrEmpty(Session["Usuario"].ToString()))
+            {
+                Response.Redirect("default.aspx");
+                return; // Importante para detener la ejecución
+            }
             if (!IsPostBack)
             {
                 // Inicialización de la página

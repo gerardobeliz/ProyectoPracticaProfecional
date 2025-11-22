@@ -10,6 +10,7 @@ namespace proyectoPracticaProfecional
         {
             // Esta página solo muestra la confirmación
             // La acción de logout se ejecuta en btnConfirmarSalir_Click
+
         }
 
         protected void btnConfirmarSalir_Click(object sender, EventArgs e)

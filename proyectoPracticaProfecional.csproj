@@ -70,6 +70,7 @@
     <Content Include="default.aspx" />
     <Content Include="Directivo.aspx" />
     <Content Include="EditarPersonal.aspx" />
+    <Content Include="galeriaFotos.aspx" />
     <Content Include="Global.asax" />
     <Content Include="home.aspx" />
     <Content Include="images\Malvinas.jpg" />
@@ -167,6 +168,13 @@
     </Compile>
     <Compile Include="EditarPersonal.aspx.designer.cs">
       <DependentUpon>EditarPersonal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="galeriaFotos.aspx.cs">
+      <DependentUpon>galeriaFotos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="galeriaFotos.aspx.designer.cs">
+      <DependentUpon>galeriaFotos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

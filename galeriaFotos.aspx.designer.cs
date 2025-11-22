@@ -10,42 +10,33 @@
 namespace proyectoPracticaProfecional {
     
     
-    public partial class salir {
+    public partial class galeriaFotos {
         
         /// <summary>
-        /// Control lbl.
+        /// Control rptIndicators.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl;
+        protected global::System.Web.UI.WebControls.Repeater rptIndicators;
         
         /// <summary>
-        /// Control lblUltimaConexion.
+        /// Control rptImages.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUltimaConexion;
+        protected global::System.Web.UI.WebControls.Repeater rptImages;
         
         /// <summary>
-        /// Control btnCancelar.
+        /// Control lblTotalSlides.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCancelar;
-        
-        /// <summary>
-        /// Control btnConfirmarSalir.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConfirmarSalir;
+        protected global::System.Web.UI.WebControls.Label lblTotalSlides;
     }
 }

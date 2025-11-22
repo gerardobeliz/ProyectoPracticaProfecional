@@ -2,6 +2,9 @@
     CodeBehind="ModificarAlumno.aspx.cs" Inherits="proyectoPracticaProfecional.ModificarAlumno" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<!-- SweetAlert2 CDN FUERA del UpdatePanel -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <asp:ScriptManager ID="ScriptManager1" runat="server" />
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -242,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- Mensajes -->
+            <!-- Mensajes ASP.NET -->
             <asp:Panel ID="pnlSuccessMessage" runat="server" CssClass="alert alert-success mt-4 py-3"
                 Visible="false" role="alert">
                 <div class="d-flex align-items-center">
@@ -257,12 +260,34 @@
                     <asp:Label ID="lblErrorMessage" runat="server" Text=""></asp:Label>
                 </div>
             </asp:Panel>
+
+            <!-- Hidden field para controlar el mensaje -->
+            <asp:HiddenField ID="hdnMostrarMensaje" runat="server" Value="false" />
         </div>
     </div>
 </div>
 
-<!-- Script para confirmación de eliminación -->
+    </ContentTemplate>
+</asp:UpdatePanel>
+
+<!-- Scripts FUERA del UpdatePanel -->
 <script type="text/javascript">
+    function mostrarMensajeExitoso() {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Actualización Exitosa!',
+            text: 'Los datos del alumno se han actualizado correctamente.',
+            confirmButtonColor: '#2c5aa0',
+            confirmButtonText: 'Aceptar',
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: function (toast) {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+    }
+
     function confirmarEliminacion() {
         var alumnoSeleccionado = document.getElementById('<%= lblAlumnoSeleccionado.ClientID %>');
         var nombreAlumno = alumnoSeleccionado ? alumnoSeleccionado.innerText : 'este alumno';
@@ -273,10 +298,17 @@
 
         return confirm(mensaje);
     }
+
+    // Función para verificar si debe mostrar el mensaje después del postback
+    function pageLoad() {
+        var hdnMostrarMensaje = document.getElementById('<%= hdnMostrarMensaje.ClientID %>');
+        if (hdnMostrarMensaje && hdnMostrarMensaje.value === 'true') {
+            mostrarMensajeExitoso();
+            hdnMostrarMensaje.value = 'false'; // Resetear
+        }
+    }
 </script>
 
-    </ContentTemplate>
-</asp:UpdatePanel>
 <style>
     /* Estilos consistentes con la página de alta */
     body
@@ -440,6 +472,7 @@
         color: #1e40af;
     }
 </style>
+
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </asp:Content>

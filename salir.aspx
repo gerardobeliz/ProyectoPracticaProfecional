@@ -28,7 +28,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-details">
-                        <asp:Label ID="lblUsuario" runat="server" Text="Usuario" CssClass="fw-semibold d-block"></asp:Label>
+                        <asp:Label ID="lbl" runat="server" Text="Usuario" CssClass="fw-semibold d-block"></asp:Label>
                         <small class="text-muted">Última conexión: <asp:Label ID="lblUltimaConexion" runat="server" Text="Hoy"></asp:Label></small>
                     </div>
                 </div>

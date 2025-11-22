@@ -69,6 +69,11 @@ namespace proyectoPracticaProfecional
                     Url = "Calendario.aspx", 
                     Icono = "fa-calendar" 
                 },
+                new MenuItem { 
+                        Nombre = "Lugares de Interes", 
+                        Url = "galeriaFotos.aspx", 
+                        Icono = "fa-file" 
+                    },
                  new MenuItem { 
                         Nombre = "SALIR", 
                         Url = "salir.aspx", 
@@ -102,6 +107,11 @@ namespace proyectoPracticaProfecional
                         Icono = "fa-calendar" 
                     },
                     new MenuItem { 
+                        Nombre = "Lugares de Interes", 
+                        Url = "galeriaFotos.aspx", 
+                        Icono = "fa-file" 
+                    },
+                    new MenuItem { 
                         Nombre = "SALIR", 
                         Url = "salir.aspx", 
                         Icono = "fa-logaut" 
@@ -130,6 +140,11 @@ namespace proyectoPracticaProfecional
                         Url = "EliminarEmpleado.aspx", 
                         Icono = "fa-trash"  
                     },
+                    new MenuItem { 
+                        Nombre = "Lugares de Interes", 
+                        Url = "galeriaFotos.aspx", 
+                        Icono = "fa-file" 
+                    },
                      new MenuItem { 
                         Nombre = "SALIR", 
                         Url = "salir.aspx", 
@@ -157,6 +172,11 @@ namespace proyectoPracticaProfecional
                         Nombre = "Calendario", 
                         Url = "Calendario.aspx", 
                         Icono = "fa-calendar" 
+                    },
+                    new MenuItem { 
+                        Nombre = "SALIR", 
+                        Url = "salir.aspx", 
+                        Icono = "fa-logaut" 
                     },
                 };
                 CrearMenu(menualumno);

@@ -145,7 +145,9 @@ namespace proyectoPracticaProfecional
 
         protected void btnActualizar_Click(object sender, EventArgs e)
         {
-            if (Page.IsValid)
+            try
+            {
+             if (Page.IsValid)
             {
                 try
                 {
@@ -160,6 +162,7 @@ namespace proyectoPracticaProfecional
                                        direccion = @direccion, 
                                        email = @email, 
                                        telefono = @telefono, 
+                                       carrera = @carrera, 
                                        fecha_ingreso = @fecha_ingreso 
                                        WHERE legajo = @legajo";
 
@@ -174,6 +177,7 @@ namespace proyectoPracticaProfecional
                             cmd.Parameters.AddWithValue("@direccion", txtDireccion.Text.Trim());
                             cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
                             cmd.Parameters.AddWithValue("@telefono", txtTelefono.Text.Trim());
+                            cmd.Parameters.AddWithValue("@carrera", txtCarrera.Text);
                             cmd.Parameters.AddWithValue("@fecha_ingreso", Convert.ToDateTime(txtFechaInscripcion.Text));
 
                             conexion.Open();
@@ -181,7 +185,7 @@ namespace proyectoPracticaProfecional
 
                             if (result > 0)
                             {
-                                MostrarMensajeExito("Alumno actualizado correctamente.");
+                               
                                 LimpiarFormulario();
                             }
                             else
@@ -195,6 +199,36 @@ namespace proyectoPracticaProfecional
                 {
                     MostrarMensajeError("Error al actualizar alumno: " + ex.Message);
                 }
+            }
+        
+
+                bool actualizado = true; // Cambiar por tu lógica real
+
+                if (actualizado)
+                {
+                    // Configurar el hidden field para mostrar el mensaje
+                    hdnMostrarMensaje.Value = "true";
+
+                    // Opcional: Limpiar el formulario o hacer otras acciones
+                    // LimpiarFormulario();
+
+                    // También puedes mostrar el panel de éxito tradicional
+                    pnlSuccessMessage.Visible = true;
+                    lblSuccessMessage.Text = "Los datos del alumno se han actualizado correctamente.";
+                    pnlErrorMessage.Visible = false;
+                }
+                else
+                {
+                    pnlErrorMessage.Visible = true;
+                    lblErrorMessage.Text = "Error al actualizar los datos del alumno.";
+                    pnlSuccessMessage.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                pnlErrorMessage.Visible = true;
+                lblErrorMessage.Text = "Error: " + ex.Message;
+                pnlSuccessMessage.Visible = false;
             }
         }
 
