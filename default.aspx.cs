@@ -23,8 +23,11 @@ namespace Instituto46
             // Verificar primero si la sesión existe y no es nula
             if (Session["Usuario"] == null || string.IsNullOrEmpty(Session["Usuario"].ToString()))
             {
-                Response.Redirect("default.aspx");
-                return; // Importante para detener la ejecución
+                if (!Request.Url.AbsolutePath.EndsWith("default.aspx", StringComparison.OrdinalIgnoreCase))
+                {
+                    Response.Redirect("default.aspx");
+                }
+                return;
             }
             if (!IsPostBack)
             {
